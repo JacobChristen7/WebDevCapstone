@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";  
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import AdminPage from "./pages/AdminPage";
 import CoursesPage from "./pages/CoursesPage";
@@ -27,10 +28,19 @@ function CurrentPage() {
     default:
       pageName = "Home";
   }
-  return <div style={{ margin: "1em 0" }}>You are currently on: <strong>{pageName}</strong></div>;
+  return <div className="my-4">You are currently on: <span className="font-bold">{pageName}</span></div>;
 }
 
 function App() {
+  const [serverTestMessage, setServerTestMessage] = useState("");
+
+  useEffect(() => {
+    fetch("/log", { method: "POST" });
+    fetch("/api")
+      .then(res => res.json())
+      .then(data => setServerTestMessage(data.message))
+      .catch(() => setServerTestMessage("Error connecting to server"));
+  }, []);
 
   return (
     <Router>
@@ -42,6 +52,11 @@ function App() {
         <Link className="text-blue-700 font-bold" to="/register">Register</Link>
       </nav>
       <div className="bg-red-500 text-white p-4">If this is red Tailwind is working</div>
+      {serverTestMessage && (
+        <div className="p-2 bg-gray-100 border border-gray-300 text-gray-800">
+          Server says: {serverTestMessage}
+        </div>
+      )}
       <CurrentPage />
       <Routes>
         <Route path="/admin" element={<AdminPage />} />
