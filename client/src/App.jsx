@@ -33,6 +33,7 @@ function CurrentPage() {
 
 function App() {
   const [serverTestMessage, setServerTestMessage] = useState("");
+  const hideNav = location.pathname === "/login";
 
   useEffect(() => {
     fetch("/log", { method: "POST" });
@@ -44,6 +45,7 @@ function App() {
 
   return (
     <Router>
+      {!hideNav && (
       <nav className="flex gap-4 p-4 bg-blue-100">
         <Link className="text-blue-700 font-bold" to="/admin">Admin</Link>
         <Link className="text-blue-700 font-bold" to="/courses">Courses</Link>
@@ -51,7 +53,8 @@ function App() {
         <Link className="text-blue-700 font-bold" to="/login">Login</Link>
         <Link className="text-blue-700 font-bold" to="/register">Register</Link>
       </nav>
-      <div className="bg-red-500 text-white p-4">If this is red Tailwind is working</div>
+       )}
+      {/* <div className="bg-red-500 text-white p-4">If this is red Tailwind is working</div> */}
       {serverTestMessage && (
         <div className="p-2 bg-gray-100 border border-gray-300 text-gray-800">
           Server says: {serverTestMessage}
