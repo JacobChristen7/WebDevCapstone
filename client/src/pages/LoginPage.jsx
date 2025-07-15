@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -14,6 +16,7 @@ export default function LoginPage() {
       if (username === 'admin' && password === '1234') {
         setError('');
         setIsLoggedIn(true);
+        navigate('/admin');
       } else {
         setError('Invalid credentials');
         setIsLoggedIn(false);
@@ -30,7 +33,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen text-black">
       <form onSubmit={handleLogin} className='flex flex-col items-center bg-gray-500/30 backdrop-blur-lg w-1/4 m-auto rounded-lg p-10'>
       <div className='mb-5 w-full text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-3xl'>Subpar University</div>
-        <div>
+        <div className='mb-3'>
           <label>Username:</label>
           <input
             type="text"
@@ -53,7 +56,6 @@ export default function LoginPage() {
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
-      <Link to="/admin" className="text-blue-700 font-bold ml-4">Go to Admin Page</Link>
     </div>
   );
 
