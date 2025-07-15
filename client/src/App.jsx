@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";  
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import AdminPage from "./pages/AdminPage";
 import CoursesPage from "./pages/CoursesPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import DefaultLayout from "./DefaultLayout";
 
 function CurrentPage() {
   const location = useLocation();
@@ -33,7 +34,6 @@ function CurrentPage() {
 
 function App() {
   const [serverTestMessage, setServerTestMessage] = useState("");
-  const hideNav = location.pathname === "/login";
 
   useEffect(() => {
     fetch("/log", { method: "POST" });
@@ -44,31 +44,19 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      {!hideNav && (
-      <nav className="flex gap-4 p-4 bg-blue-100">
-        <Link className="text-blue-700 font-bold" to="/admin">Admin</Link>
-        <Link className="text-blue-700 font-bold" to="/courses">Courses</Link>
-        <Link className="text-blue-700 font-bold" to="/profile">Profile</Link>
-        <Link className="text-blue-700 font-bold" to="/login">Login</Link>
-        <Link className="text-blue-700 font-bold" to="/register">Register</Link>
-      </nav>
-       )}
-      {/* <div className="bg-red-500 text-white p-4">If this is red Tailwind is working</div> */}
-      {serverTestMessage && (
-        <div className="p-2 bg-gray-100 border border-gray-300 text-gray-800">
-          Server says: {serverTestMessage}
-        </div>
-      )}
-      <CurrentPage />
-      <Routes>
+  <Router>
+    <CurrentPage />
+    <Routes>
+      <Route element={<DefaultLayout serverTestMessage={serverTestMessage} />}>
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-      </Routes>
-    </Router>
+      </Route>
+      <Route path="/" element={<LoginPage />} /> {/* Home page is login but can be changed */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+    </Routes>
+  </Router>
   );
 }
 

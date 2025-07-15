@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom"
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -49,9 +50,9 @@ export default function LoginPage() {
         </div>
 
         <button type="submit">Login</button>
-
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
+      <Link to="/admin" className="text-blue-700 font-bold ml-4">Go to Admin Page</Link>
     </div>
   );
 
