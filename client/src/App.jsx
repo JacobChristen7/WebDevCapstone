@@ -29,7 +29,7 @@ function CurrentPage() {
     default:
       pageName = "Home";
   }
-  return <div className="my-4">You are currently on: <span className="font-bold">{pageName}</span></div>;
+  //return <div className="my-4">You are currently on: <span className="font-bold">{pageName}</span></div>;
 }
 
 function App() {
