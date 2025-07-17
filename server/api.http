@@ -1,0 +1,19 @@
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "James",
+  "email": "James@testmail.com"
+}
+###
+
+PUT http://localhost:3001/api/users/7
+Content-Type: application/json
+
+{
+  "name": "Tester Don",
+  "email": "tester2@testmail.com"
+}
+###
+
+DELETE http://localhost:3001/api/users/6
