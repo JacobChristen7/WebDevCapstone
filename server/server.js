@@ -7,6 +7,23 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+// Postgress connection (add a .env file in the server folder with this text in it "DATABASE_URL=postgres://your_username:your_password@localhost:5432/your_db_name" and replace it with your credentials)
+const { Pool } = require("pg");
+require("dotenv").config();
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+// Test pg connection
+pool.query("SELECT NOW()", (err, res) => {
+  if (err) {
+    logger.error("Postgres connection error:", err);
+  } else {
+    logger.info("Postgres connected: " + JSON.stringify(res.rows[0]));
+  }
+});
+
 // Create winston logger 
 const logger = winston.createLogger({
   level: 'info', 
