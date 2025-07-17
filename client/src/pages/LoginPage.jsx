@@ -33,7 +33,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen text-black">
       <form onSubmit={handleLogin} className='flex flex-col items-center bg-gray-500/30 backdrop-blur-lg w-1/4 m-auto rounded-lg p-10'>
       <div className='mb-5 w-full text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-3xl'>Subpar University</div>
-        <div className='mb-3'>
+        <div className='mb-3 flex w-full justify-between pr-1'>
           <label>Username:</label>
           <input
             type="text"
@@ -43,7 +43,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <div>
+        <div className='flex w-full justify-between pr-1'>
           <label>Password:</label>
           <input
             type="password"

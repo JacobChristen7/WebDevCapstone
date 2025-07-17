@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";  
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import AdminPage from "./pages/AdminPage";
 import CoursesPage from "./pages/CoursesPage";
@@ -50,11 +50,12 @@ function App() {
       <Route element={<DefaultLayout serverTestMessage={serverTestMessage} />}>
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        
       </Route>
       <Route path="/" element={<LoginPage />} /> {/* Home page is login but can be changed */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
     </Routes>
   </Router>
   );
