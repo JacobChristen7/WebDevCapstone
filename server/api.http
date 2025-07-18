@@ -2,18 +2,28 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "name": "James",
-  "email": "James@testmail.com"
+  "username": "James23",
+  "email": "James@testmail.com",
+  "firstname": "James",
+  "lastname": "Smith",
+  "telephone": "123-456-78910",
+  "address": "123 Main",
+  "admin": false
 }
 ###
 
-PUT http://localhost:3001/api/users/7
+PUT http://localhost:3001/api/users/3
 Content-Type: application/json
 
 {
-  "name": "Tester Don",
-  "email": "tester2@testmail.com"
+  "username": "TesterDon",
+  "email": "tester2@testmail.com",
+  "firstname": "Don",
+  "lastname": "Tester",
+  "telephone": "585-5858",
+  "address": "456 Birch St.",
+  "admin": true
 }
 ###
 
-DELETE http://localhost:3001/api/users/6
+DELETE http://localhost:3001/api/users/3
