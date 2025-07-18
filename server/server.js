@@ -7,12 +7,15 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-// Postgress connection (add a .env file in the server folder with this text in it "DATABASE_URL=postgres://your_username:your_password@localhost:5432/your_db_name" and replace it with your credentials)
+// Postgress connection
 const { Pool } = require("pg");
 require("dotenv").config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Test pg connection
@@ -56,11 +59,11 @@ app.get("/api/users/:id", async (req, res) => {
 
 // Create a new user
 app.post("/api/users", express.json(), async (req, res) => {
-  const { name, email } = req.body;
+  const { username, email, firstname, lastname, telephone, address, admin } = req.body;
   try {
     const result = await pool.query(
-      "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
-      [name, email]
+      "INSERT INTO users (username, email, firstname, lastname, telephone, address, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [username, email, firstname, lastname, telephone, address, admin]
     );
     logger.info(`User created: ${JSON.stringify(result.rows[0])}`);
     res.status(201).json(result.rows[0]);
@@ -72,11 +75,11 @@ app.post("/api/users", express.json(), async (req, res) => {
 
 // Update a user's info
 app.put("/api/users/:id", express.json(), async (req, res) => {
-  const { name, email } = req.body;
+  const { username, email, firstname, lastname, telephone, address, admin } = req.body;
   try {
     const result = await pool.query(
-      "UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *",
-      [name, email, req.params.id]
+      "UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4, telephone = $5, address = $6, admin = $7 WHERE id = $8 RETURNING *",
+      [username, email, firstname, lastname, telephone, address, admin, req.params.id]
     );
     if (result.rows.length === 0) {
       logger.info(`User not found for update: id=${req.params.id}`);
@@ -108,8 +111,6 @@ app.delete("/api/users/:id", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
-
 
 // Create winston logger 
 const logger = winston.createLogger({
