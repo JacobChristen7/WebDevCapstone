@@ -9,12 +9,42 @@ export default function ProfilePage() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSave = () => {
-    setSavedProfile({ ...form })
-  };
+  // updates user info in the database
+  const handleSave = async () => {
+  try {
+    const response = await fetch('/api/users/2', { // Change number with the id you want from user database
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: form.username,
+        email: form.email,
+        firstname: form.firstName,
+        lastname: form.lastName,
+        telephone: form.phone,
+        address: form.address,
+        admin: false,
+        aboutMe: form.aboutMe
+      })
+    });
+    if (!response.ok) throw new Error('Failed to update profile');
+    const updated = await response.json();
+    setSavedProfile({
+      username: updated.username,
+      email: updated.email,
+      firstName: updated.firstname,
+      lastName: updated.lastname,
+      phone: updated.telephone,
+      address: updated.address,
+      aboutMe: updated.aboutMe || ''
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
+  // Gets user info from the database
   useEffect(() => {
-    fetch('/api/users/1')
+    fetch('/api/users/2') // Change number with the id you want from user database
       .then(res => res.json())
       .then(data => {
         setForm({
@@ -38,7 +68,7 @@ export default function ProfilePage() {
       });
   }, []);
 
-  if (!form || !savedProfile) {
+  if (!form || !savedProfile) { // Loading reqired for fetch
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="text-4xl font-bold text-blue-600 animate-pulse drop-shadow-lg">
@@ -65,14 +95,14 @@ export default function ProfilePage() {
               <Input label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} />
               <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} />
               <Input label="Address" name="address" value={form.address} onChange={handleChange} />
-              <Input label="About Me" name="aboutMe" value={form.aboutMe} onChange={handleChange} />
+              <Input label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} name="aboutMe" value={form.aboutMe} onChange={handleChange} />
             </div>
 
             <button
               onClick={handleSave}
               className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
             >
-              Save
+              Save Edits
             </button>
           </div>
         </div>

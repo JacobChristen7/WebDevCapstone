@@ -75,11 +75,11 @@ app.post("/api/users", express.json(), async (req, res) => {
 
 // Update a user's info
 app.put("/api/users/:id", express.json(), async (req, res) => {
-  const { username, email, firstname, lastname, telephone, address, admin } = req.body;
+  const { username, email, firstname, lastname, telephone, address, admin, aboutMe } = req.body;
   try {
     const result = await pool.query(
-      "UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4, telephone = $5, address = $6, admin = $7 WHERE id = $8 RETURNING *",
-      [username, email, firstname, lastname, telephone, address, admin, req.params.id]
+      'UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4, telephone = $5, address = $6, admin = $7, "aboutMe" = $8 WHERE id = $9 RETURNING *',
+      [username, email, firstname, lastname, telephone, address, admin, aboutMe, req.params.id]
     );
     if (result.rows.length === 0) {
       logger.info(`User not found for update: id=${req.params.id}`);
