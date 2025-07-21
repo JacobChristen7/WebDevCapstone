@@ -17,3 +17,7 @@ body {
     margin: 0;
     overflow: hidden;
 }
+
+.all-unset {
+    all: unset;
+}

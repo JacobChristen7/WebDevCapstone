@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import Input from './Components';
 
 export default function ProfilePage() {
   const [form, setForm] = useState(null);
   const [savedProfile, setSavedProfile] = useState(null);
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
   
@@ -79,11 +80,11 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen'>
-      <div className="bg-gray-100 flex h-3/4 w-3/4 justify-center p-10 text-black rounded-lg">
+    <div className='flex flex-col items-center pt-5 pb-20 h-screen overflow-y-auto box-border'>
+      <div className="bg-gray-100 flex w-3/4 justify-center p-10 text-black rounded-3xl">
       <ProfileDisplay form={savedProfile}></ProfileDisplay>
         <div className="flex w-full items-center justify-center bg-gray-100 pl-10">
-          <div className="bg-white shadow-md rounded-lg p-6 w-full flex justify-center">
+          <div className="bg-white shadow-md rounded-2xl p-6 w-full flex justify-center">
             <div className='w-3/4'>
             <div className='mb-5 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-3xl'>Subpar University</div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800">My Profile</h2>
@@ -112,27 +113,10 @@ export default function ProfilePage() {
   );
 };
 
-// Simple reusable input component
-const Input = ({ label, name, value, onChange, type = 'text' }) => (
-  <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
-      {label}
-    </label>
-    <input
-      id={name}
-      name={name}
-      type={type}
-      value={value}
-      onChange={onChange}
-      className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
-    />
-  </div>
-);
-
 const ProfileDisplay = ({form}) => {
   const { username, firstName, lastName, email, phone, address, aboutMe } = form;
   return (
-    <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm text-center">
+    <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm text-center">
       <img
         className="w-48 h-48 rounded-full mx-auto mb-4 border-4 border-blue-500"
         src="https://i.pravatar.cc/150"
