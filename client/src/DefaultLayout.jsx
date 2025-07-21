@@ -22,24 +22,24 @@ function CurrentPage() {
     default:
       pageName = "Home";
   }
-  return <div className="my-4">You are currently on: <span className="font-bold">{pageName}</span></div>;
+  // return <div className="my-4">You are currently on: <span className="font-bold">{pageName}</span></div>;
 }
 
 const DefaultLayout = ({ serverTestMessage }) => (
   <>
-    <nav className="flex gap-4 p-4 bg-blue-100">
+    <nav className="sticky flex top-0 w-full gap-4 p-4 bg-blue-100">
       <Link className="text-blue-700 font-bold" to="/admin">Admin</Link>
       <Link className="text-blue-700 font-bold" to="/courses">Courses</Link>
       <Link className="text-blue-700 font-bold" to="/profile">Profile</Link>
       <Link className="text-blue-700 font-bold" to="/login">Login</Link>
     <Link className="text-blue-700 font-bold" to="/register">Register</Link>
     </nav>
-    <div className="bg-red-500 text-white p-4">If this is red Tailwind is working</div>
+    {/* <div className="bg-red-500 text-white p-4">If this is red Tailwind is working</div>
     {serverTestMessage && (
       <div className="p-2 bg-gray-100 border border-gray-300 text-gray-800">
         Server says: {serverTestMessage}
       </div>
-    )}
+    )} */}
     <CurrentPage />
     <Outlet />
   </>

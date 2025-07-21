@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Input from './Components';
 
 export default function ProfilePage() {
   const [form, setForm] = useState({
@@ -12,8 +13,8 @@ export default function ProfilePage() {
   });
   const [savedProfile, setSavedProfile] = useState(form);
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
   
@@ -22,8 +23,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen'>
-      <div className="bg-gray-100 flex h-3/4 w-3/4 justify-center p-10 text-black rounded-lg">
+    <div className='flex flex-col items-center pt-5 pb-20 h-screen overflow-y-auto box-border'>
+      <div className="bg-gray-100 flex w-3/4 justify-center p-10 text-black rounded-lg">
       <ProfileDisplay form={savedProfile}></ProfileDisplay>
         <div className="flex w-full items-center justify-center bg-gray-100 pl-10">
           <div className="bg-white shadow-md rounded-lg p-6 w-full flex justify-center">
@@ -54,23 +55,6 @@ export default function ProfilePage() {
     </div>
   );
 };
-
-// Simple reusable input component
-const Input = ({ label, name, value, onChange, type = 'text' }) => (
-  <div>
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
-      {label}
-    </label>
-    <input
-      id={name}
-      name={name}
-      type={type}
-      value={value}
-      onChange={onChange}
-      className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
-    />
-  </div>
-);
 
 const ProfileDisplay = ({form}) => {
   const { username, firstName, lastName, email, phone, address, aboutMe } = form;
