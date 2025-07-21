@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ProfilePage() {
-  const [form, setForm] = useState({
-    username: 'johnsmith',
-    email: 'johnsmith@gmail.com',
-    firstName: 'John',
-    lastName: 'Smith',
-    phone: '123-456-7890',
-    address: 'nowhere street',
-    aboutMe: 'Teacher. Prides themselves in being sub-par at everything they do',
-  });
-  const [savedProfile, setSavedProfile] = useState(form);
+  const [form, setForm] = useState(null);
+  const [savedProfile, setSavedProfile] = useState(null);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,6 +12,41 @@ export default function ProfilePage() {
   const handleSave = () => {
     setSavedProfile({ ...form })
   };
+
+  useEffect(() => {
+    fetch('/api/users/1')
+      .then(res => res.json())
+      .then(data => {
+        setForm({
+          username: data.username,
+          email: data.email,
+          firstName: data.firstname,
+          lastName: data.lastname,
+          phone: data.telephone,
+          address: data.address,
+          aboutMe: data.aboutMe || '',
+        });
+        setSavedProfile({
+          username: data.username,
+          email: data.email,
+          firstName: data.firstname,
+          lastName: data.lastname,
+          phone: data.telephone,
+          address: data.address,
+          aboutMe: data.aboutMe || '',
+        });
+      });
+  }, []);
+
+  if (!form || !savedProfile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-4xl font-bold text-blue-600 animate-pulse drop-shadow-lg">
+          Loading...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>
