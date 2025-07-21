@@ -1,9 +1,33 @@
 import React, { useState } from 'react';
-import { SearchInput } from './Components';
+import { StylishList, SearchInput } from './Components';
 
 export default function CoursesPage() {
+  const sampleItems = [
+    "Introduction to Psychology",
+    "Calculus I",
+    "English Literature",
+    "Principles of Economics",
+    "General Chemistry",
+    "World History",
+    "Computer Science Fundamentals",
+    "Business Management",
+    "Art History",
+    "Physics I",
+    "Sociology Basics",
+    "Environmental Science",
+    "Political Science",
+    "Creative Writing",
+    "Introduction to Philosophy",
+    "Public Speaking",
+    "Anatomy and Physiology",
+    "Marketing Principles",
+    "Statistics for Social Sciences",
+    "Film Studies"
+  ];
 
   const [searchText, setSearchText] = useState("")
+  const [registeredCourses, setRegisteredCourses] = useState([])
+  const [availableCourses, setAvailableCourses] = useState(sampleItems)
 
   const handleChange = (e) => {
     setSearchText(e.target.value)
@@ -12,11 +36,10 @@ export default function CoursesPage() {
   return (
     <div className='flex flex-col items-center pt-5 pb-20 h-screen overflow-y-auto box-border'>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
-        
         <SearchBar searchText={searchText} handleChange={handleChange}></SearchBar>
         <div className='flex gap-10'>
-          <AvailableCourses></AvailableCourses>
-          <RegisteredCourses></RegisteredCourses>
+          <CoursesList title="Available Courses" courses={availableCourses}></CoursesList>
+          <CoursesList title="Registered Courses" courses={registeredCourses}></CoursesList>
         </div>
       </div>
     </div>
@@ -34,18 +57,11 @@ const SearchBar = ({ searchText, handleChange }) => {
   );
 }
 
-const AvailableCourses = () => {
+const CoursesList = ({ title, courses }) => {
+
   return (
     <div className="flex w-1/2 bg-white shadow-lg rounded-2xl p-8">
-      
-    </div>
-  );
-};
-
-const RegisteredCourses = () => {
-  return (
-    <div className="flex w-1/2 bg-white shadow-lg rounded-2xl">
-      
+      <StylishList title={title} items={courses}></StylishList>
     </div>
   );
 };
