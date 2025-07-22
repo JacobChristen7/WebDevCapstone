@@ -62,7 +62,7 @@ app.post("/api/users", express.json(), async (req, res) => {
   const { username, email, firstname, lastname, telephone, address, admin, aboutMe } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO users (username, email, firstname, lastname, telephone, address, admin, "aboutME") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      'INSERT INTO users (username, email, firstname, lastname, telephone, address, admin, "aboutMe") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
       [username, email, firstname, lastname, telephone, address, admin, aboutMe]
     );
     logger.info(`User created: ${JSON.stringify(result.rows[0])}`);
