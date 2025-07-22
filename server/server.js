@@ -27,7 +27,7 @@ pool.query("SELECT NOW()", (err, res) => {
   }
 });
 
-// Postgres Database API functions
+// User Postgres Database API functions
 
 // Get all users
 app.get("/api/users", async (req, res) => {
@@ -59,11 +59,11 @@ app.get("/api/users/:id", async (req, res) => {
 
 // Create a new user
 app.post("/api/users", express.json(), async (req, res) => {
-  const { username, email, firstname, lastname, telephone, address, admin } = req.body;
+  const { username, email, firstname, lastname, telephone, address, admin, aboutMe } = req.body;
   try {
     const result = await pool.query(
-      "INSERT INTO users (username, email, firstname, lastname, telephone, address, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-      [username, email, firstname, lastname, telephone, address, admin]
+      'INSERT INTO users (username, email, firstname, lastname, telephone, address, admin, "aboutMe") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      [username, email, firstname, lastname, telephone, address, admin, aboutMe]
     );
     logger.info(`User created: ${JSON.stringify(result.rows[0])}`);
     res.status(201).json(result.rows[0]);
@@ -108,6 +108,153 @@ app.delete("/api/users/:id", async (req, res) => {
     res.json({ message: "User deleted", user: result.rows[0] });
   } catch (err) {
     logger.error("Error deleting user: " + err.message);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Courses Postgres Database API functions
+
+// Get all courses
+app.get("/api/courses", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM courses");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Get course by id
+app.get("/api/courses/:id", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM courses WHERE id = $1", [req.params.id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Create a course
+
+app.post("/api/courses", express.json(), async (req, res) => {
+  const { name, description, credits, capacity } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO courses (name, description, credits, capacity) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name, description, credits, capacity]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Update a course
+
+app.put("/api/courses/:id", express.json(), async (req, res) => {
+  const { name, description, credits, capacity } = req.body;
+  try {
+    const result = await pool.query(
+      "UPDATE courses SET name = $1, description = $2, credits = $3, capacity = $4 WHERE id = $5 RETURNING *",
+      [name, description, credits, capacity, req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Delete a course
+
+app.delete("/api/courses/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM courses WHERE id = $1 RETURNING *",
+      [req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    res.json({ message: "Course deleted", course: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Registrations Postgres Database API functions
+
+// Get all registrations
+app.get("/api/registrations", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM registrations");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Get registration by ID
+app.get("/api/registrations/:id", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM registrations WHERE id = $1", [req.params.id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Registration not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Create a registration
+app.post("/api/registrations", express.json(), async (req, res) => {
+  const { user_id, course_id } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO registrations (user_id, course_id) VALUES ($1, $2) RETURNING *",
+      [user_id, course_id]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Update a registration
+app.put("/api/registrations/:id", express.json(), async (req, res) => {
+  const { user_id, course_id } = req.body;
+  try {
+    const result = await pool.query(
+      "UPDATE registrations SET user_id = $1, course_id = $2 WHERE id = $3 RETURNING *",
+      [user_id, course_id, req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Registration not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Delete a registration
+app.delete("/api/registrations/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM registrations WHERE id = $1 RETURNING *",
+      [req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Registration not found" });
+    }
+    res.json({ message: "Registration deleted", registration: result.rows[0] });
+  } catch (err) {
     res.status(500).json({ error: "Database error" });
   }
 });
