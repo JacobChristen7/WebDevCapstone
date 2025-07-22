@@ -27,7 +27,7 @@ function CurrentPage() {
 
 const DefaultLayout = ({ serverTestMessage }) => (
   <>
-    <nav className="sticky flex top-0 w-full gap-4 p-4 bg-blue-100">
+    <nav className="sticky flex top-0 w-full gap-4 p-4 bg-blue-100 z-50">
       <Link className="text-blue-700 font-bold" to="/admin">Admin</Link>
       <Link className="text-blue-700 font-bold" to="/courses">Courses</Link>
       <Link className="text-blue-700 font-bold" to="/profile">Profile</Link>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StylishList, SearchInput, Draggable, Droppable, DragOverlayWrapper } from './Components';
+import { Droppable, DragOverlayWrapper, SearchInput, StylishList, SubmitButton } from './Components';
 import { DndContext, useSensor, PointerSensor } from '@dnd-kit/core';
 
 export default function CoursesPage() {
@@ -64,11 +64,11 @@ export default function CoursesPage() {
 
   function handleDragStart(event) {
     const draggedId = event.active.id;
-  
+
     const course =
       availableCourses.find(c => c.id === draggedId) ||
       selectedCourses.find(c => c.id === draggedId);
-      console.log(course)
+    console.log(course)
     setActiveCourse(course);
   }
 
@@ -102,11 +102,11 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className='flex flex-col items-center pt-5 pb-20 h-screen overflow-y-auto box-border gap-5'>
+    <div className='flex flex-col items-center pt-10 pb-20 h-screen overflow-y-auto box-border gap-5'>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
         <CoursesList title="Registered Courses" courses={registeredCourses}></CoursesList>
       </div>
-      <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
+      <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
         <SearchBar searchText={searchText} handleChange={handleChange}></SearchBar>
         <div className='flex gap-10'>
           <DndContext sensors={[useSensor(PointerSensor, { activationConstraint: { distance: 5, }, })]} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
@@ -114,7 +114,10 @@ export default function CoursesPage() {
               <CoursesList title="Available Courses" courses={filteredCourses} className='w-full h-[500px]' activeId={activeCourse?.id ?? 0}></CoursesList>
             </Droppable>
             <Droppable id="selected" className='w-1/2'>
-              <CoursesList title="Selected Courses" courses={selectedCourses} className='w-full h-[500px]' activeId={activeCourse?.id ?? 0}></CoursesList>
+              <div className='flex flex-col w-full'>
+                <CoursesList title="Selected Courses" courses={selectedCourses} className='w-full' activeId={activeCourse?.id ?? 0}></CoursesList>
+                <SubmitButton text={"Confirm Registration"} onClick={{}} />
+              </div>
             </Droppable>
             <DragOverlayWrapper course={activeCourse} />
           </DndContext>
@@ -136,7 +139,6 @@ const SearchBar = ({ searchText, handleChange }) => {
 }
 
 const CoursesList = ({ title, courses, className = '', activeId }) => {
-
   return (
     <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
       <StylishList title={title} items={courses} activeID={activeId}></StylishList>

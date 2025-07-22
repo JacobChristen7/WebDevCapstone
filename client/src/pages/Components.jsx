@@ -152,7 +152,7 @@ export function DragOverlayWrapper({ course }) {
   return (
     <DragOverlay
       style={{
-        zIndex: 9999,
+        zIndex: 5,
         pointerEvents: 'none', // avoids capturing hover/clicks
       }}
     >
@@ -165,5 +165,6 @@ export function DragOverlayWrapper({ course }) {
   );
 }
 
-
-export default Input;
+export function SubmitButton({ text, onClick }) {
+  return <button onClick={onClick} type="submit" className='w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-3 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none mt-5'>{text}</button>
+}

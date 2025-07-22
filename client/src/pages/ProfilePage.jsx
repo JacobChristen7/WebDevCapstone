@@ -1,47 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import Input from './Components';
+import { Input, SubmitButton } from './Components';
 
 export default function ProfilePage() {
   const [form, setForm] = useState(null);
   const [savedProfile, setSavedProfile] = useState(null);
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
-  
+
   // updates user info in the database
   const handleSave = async () => {
-  try {
-    const response = await fetch('/api/users/2', { // Change number with the id you want from user database
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: form.username,
-        email: form.email,
-        firstname: form.firstName,
-        lastname: form.lastName,
-        telephone: form.phone,
-        address: form.address,
-        admin: false,
-        aboutMe: form.aboutMe
-      })
-    });
-    if (!response.ok) throw new Error('Failed to update profile');
-    const updated = await response.json();
-    setSavedProfile({
-      username: updated.username,
-      email: updated.email,
-      firstName: updated.firstname,
-      lastName: updated.lastname,
-      phone: updated.telephone,
-      address: updated.address,
-      aboutMe: updated.aboutMe || ''
-    });
-  } catch (err) {
-    console.error(err);
-  }
-};
+    try {
+      const response = await fetch('/api/users/2', { // Change number with the id you want from user database
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: form.username,
+          email: form.email,
+          firstname: form.firstName,
+          lastname: form.lastName,
+          telephone: form.phone,
+          address: form.address,
+          admin: false,
+          aboutMe: form.aboutMe
+        })
+      });
+      if (!response.ok) throw new Error('Failed to update profile');
+      const updated = await response.json();
+      setSavedProfile({
+        username: updated.username,
+        email: updated.email,
+        firstName: updated.firstname,
+        lastName: updated.lastname,
+        phone: updated.telephone,
+        address: updated.address,
+        aboutMe: updated.aboutMe || ''
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Gets user info from the database
   useEffect(() => {
@@ -82,38 +82,33 @@ export default function ProfilePage() {
   return (
     <div className='flex flex-col items-center pt-5 pb-20 h-screen overflow-y-auto box-border'>
       <div className="bg-gray-100 flex w-3/4 justify-center p-10 text-black rounded-3xl">
-      <ProfileDisplay form={savedProfile}></ProfileDisplay>
+        <ProfileDisplay form={savedProfile}></ProfileDisplay>
         <div className="flex w-full items-center justify-center bg-gray-100 pl-10">
           <div className="bg-white shadow-md rounded-2xl p-6 w-full flex justify-center">
             <div className='w-3/4'>
-            <div className='mb-5 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-3xl'>Subpar University</div>
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">My Profile</h2>
+              <div className='mb-5 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-3xl'>Subpar University</div>
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">My Profile</h2>
 
-            <div className="space-y-4">
-              <Input label="Username" name="username" value={form.username} onChange={handleChange} />
-              <Input label="Email" name="email" type="email" value={form.email} onChange={handleChange} />
-              <Input label="First Name" name="firstName" value={form.firstName} onChange={handleChange} />
-              <Input label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} />
-              <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} />
-              <Input label="Address" name="address" value={form.address} onChange={handleChange} />
-              <Input label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} name="aboutMe" value={form.aboutMe} onChange={handleChange} />
+              <div className="space-y-4">
+                <Input label="Username" name="username" value={form.username} onChange={handleChange} />
+                <Input label="Email" name="email" type="email" value={form.email} onChange={handleChange} />
+                <Input label="First Name" name="firstName" value={form.firstName} onChange={handleChange} />
+                <Input label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} />
+                <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} />
+                <Input label="Address" name="address" value={form.address} onChange={handleChange} />
+                <Input label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} name="aboutMe" value={form.aboutMe} onChange={handleChange} />
+              </div>
+
+              <SubmitButton text={"Save Edits"} onClick={handleSave} />
             </div>
-
-            <button
-              onClick={handleSave}
-              className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
-            >
-              Save Edits
-            </button>
           </div>
         </div>
       </div>
     </div>
-    </div>
   );
 };
 
-const ProfileDisplay = ({form}) => {
+const ProfileDisplay = ({ form }) => {
   const { username, firstName, lastName, email, phone, address, aboutMe } = form;
   return (
     <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm text-center">
