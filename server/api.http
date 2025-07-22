@@ -53,4 +53,32 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3001/api/courses/21
+###
+
+### Registration api requests
+
+### Create a new registration
+POST http://localhost:3001/api/registrations
+Content-Type: application/json
+
+{
+  "user_id": 2,
+  "course_id": 15
+}
+
+###
+
+### Update a registration
+PUT http://localhost:3001/api/registrations/3
+Content-Type: application/json
+
+{
+  "user_id": 2,
+  "course_id": 2
+}
+
+###
+
+### Delete a registration
+DELETE http://localhost:3001/api/registrations/4
 

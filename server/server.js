@@ -187,6 +187,78 @@ app.delete("/api/courses/:id", async (req, res) => {
   }
 });
 
+// Registrations Postgres Database API functions
+
+// Get all registrations
+app.get("/api/registrations", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM registrations");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Get registration by ID
+app.get("/api/registrations/:id", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM registrations WHERE id = $1", [req.params.id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Registration not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Create a registration
+app.post("/api/registrations", express.json(), async (req, res) => {
+  const { user_id, course_id } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO registrations (user_id, course_id) VALUES ($1, $2) RETURNING *",
+      [user_id, course_id]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Update a registration
+app.put("/api/registrations/:id", express.json(), async (req, res) => {
+  const { user_id, course_id } = req.body;
+  try {
+    const result = await pool.query(
+      "UPDATE registrations SET user_id = $1, course_id = $2 WHERE id = $3 RETURNING *",
+      [user_id, course_id, req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Registration not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Delete a registration
+app.delete("/api/registrations/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM registrations WHERE id = $1 RETURNING *",
+      [req.params.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Registration not found" });
+    }
+    res.json({ message: "Registration deleted", registration: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 // Create winston logger 
 const logger = winston.createLogger({
   level: 'info', 
