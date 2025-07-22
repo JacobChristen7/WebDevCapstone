@@ -36,18 +36,19 @@ export function SearchInput({ placeholder, name, value, onChange, type = 'text' 
   );
 }
 
-export function StylishList({ title, items, activeID }) {
+export function StylishList({ title, subtitle, items, activeID }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className='flex flex-col w-full'>
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
+      <div className='flex flex-row items-center justify-between w-full'>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
+        <div className="text-sm italic text-gray-500 mb-4">{subtitle}</div>
+      </div>
       <div className="w-full overflow-y-auto overflow-x-hidden px-5">
-
-
         <ul className='py-3'>
           {items.length === 0 ? (
-            <li className="text-center text-gray-500 italic">No items available.</li>
+            <li className="text-sm text-center text-gray-500 italic">No items</li>
           ) : (
             items.map((item, index) => {
               const isDraggingCurrent = activeID === item.id;

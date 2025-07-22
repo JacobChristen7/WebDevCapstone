@@ -111,7 +111,7 @@ export default function CoursesPage() {
         <div className='flex gap-10'>
           <DndContext sensors={[useSensor(PointerSensor, { activationConstraint: { distance: 5, }, })]} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <Droppable id="available" className='w-1/2'>
-              <CoursesList title="Available Courses" courses={filteredCourses} className='w-full h-[500px]' activeId={activeCourse?.id ?? 0}></CoursesList>
+              <CoursesList title="Available Courses" subtitle="Drag and drop to add a course" courses={filteredCourses} className='w-full h-[500px]' activeId={activeCourse?.id ?? 0}></CoursesList>
             </Droppable>
             <Droppable id="selected" className='w-1/2'>
               <div className='flex flex-col w-full'>
@@ -138,10 +138,10 @@ const SearchBar = ({ searchText, handleChange }) => {
   );
 }
 
-const CoursesList = ({ title, courses, className = '', activeId }) => {
+const CoursesList = ({ title, subtitle, courses, className = '', activeId }) => {
   return (
     <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
-      <StylishList title={title} items={courses} activeID={activeId}></StylishList>
+      <StylishList title={title} subtitle={subtitle} items={courses} activeID={activeId}></StylishList>
     </div>
   );
 };
