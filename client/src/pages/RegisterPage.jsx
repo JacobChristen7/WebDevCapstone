@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LabeledInput } from './Components';
+import { LabeledInput, SubmitButton } from './Components';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -50,6 +50,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen text-black">
+
       <form onSubmit={handleRegister} className='flex flex-col items-center bg-gray-500/30 backdrop-blur-lg w-2/5 m-auto rounded-lg p-10 gap-3'>
       <div className='mb-5 w-full text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-3xl'>Subpar University</div>
       
@@ -109,9 +110,8 @@ export default function RegisterPage() {
           value={form.aboutMe}
           onChange={e => setForm({ ...form, aboutMe: e.target.value })}
         />
-        
 
-        <button type="submit" className='w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 mt-5'>Confirm Registration</button>
+        <SubmitButton text={"Confirm Registration"} onClick={{}} />
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     </div>

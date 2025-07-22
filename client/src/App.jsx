@@ -44,19 +44,19 @@ function App() {
   }, []);
 
   return (
-  <Router>
-    <CurrentPage />
-    <Routes>
-      <Route element={<DefaultLayout serverTestMessage={serverTestMessage} />}>
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-      </Route>
-      <Route path="/" element={<LoginPage />} /> {/* Home page is login but can be changed */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-    </Routes>
-  </Router>
+    <Router>
+      <CurrentPage />
+      <Routes>
+        <Route element={<DefaultLayout serverTestMessage={serverTestMessage} />}>
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+        <Route path="/" element={<LoginPage />} /> {/* Home page is login but can be changed */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    </Router>
   );
 }
 
