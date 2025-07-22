@@ -1,3 +1,4 @@
+### User api requests
 POST http://localhost:3001/api/users
 Content-Type: application/json
 
@@ -27,3 +28,29 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3001/api/users/3
+###
+
+### Courses api requests
+POST http://localhost:3001/api/courses
+Content-Type: application/json
+
+{
+  "name": "Test Course",
+  "description": "Testing",
+  "credits": 2,
+  "capacity": 20
+}
+###
+PUT http://localhost:3001/api/courses/21
+Content-Type: application/json
+
+{
+  "name": "Updated Course",
+  "description": "Changed stuff",
+  "credits": 3,
+  "capacity": 25
+}
+###
+
+DELETE http://localhost:3001/api/courses/21
+
