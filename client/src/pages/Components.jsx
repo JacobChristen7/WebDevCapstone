@@ -83,5 +83,27 @@ export function CollapsibleItem({ item, index, children }) {
   );
 }
 
+export function LabeledInput({
+  label,
+  value,
+  onChange,
+  type = 'text',
+  required = false,
+  width = 'w-[200px]',
+}) {
+  return (
+    <div className='flex w-full justify-between pr-1'>
+      <label>{label}</label>
+      <input
+        className={width}
+        type={type}
+        value={value}
+        onChange={onChange}
+        required={required}
+      />
+    </div>
+  );
+};
+
 
 export default Input;
