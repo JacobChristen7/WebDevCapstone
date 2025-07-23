@@ -29,7 +29,7 @@ export default function CoursesPage() {
   fetch('/api/users/2/registered-courses')
     .then(res => res.json())
     .then(data => {
-      // Mapped to match the display logic
+      // Mapped to match the display code logic
       const mapped = data.map(course => ({
         ...course,
         title: course.name
@@ -43,9 +43,11 @@ export default function CoursesPage() {
     setSearchText(e.target.value)
   }
 
-  const filteredCourses = availableCourses.filter(course => {
-    return course.title.toLowerCase().includes(searchText.toLowerCase())
-  })
+// Filter out available courses that the user is already registered for
+const filteredCourses = availableCourses
+  .filter(course => !registeredCourses.some(rc => rc.id === course.id))
+  .filter(course => course.title.toLowerCase().includes(searchText.toLowerCase()));
+
 
   function handleDragStart(event) {
     const draggedId = event.active.id;
