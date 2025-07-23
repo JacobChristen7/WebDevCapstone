@@ -73,7 +73,77 @@ export function StylishList({ title, subtitle, items, activeID }) {
   );
 };
 
-export function CollapsibleItem({ item, index, isDragging, children }) {
+export function ColumnsList({ title, subtitle, items, activeID }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className='flex flex-col w-full'>
+      <div className='flex flex-row items-center justify-between w-full'>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">{title}</h2>
+        <div className="text-sm italic text-gray-500 mb-4">{subtitle}</div>
+      </div>
+      <div className="overflow-y-auto overflow-x-hidden px-5">
+        <ul className='grid grid-cols-2 gap-x-5'>
+          {items.length === 0 ? (
+            <li className="text-sm text-center text-gray-500 italic">No items</li>
+          ) : (
+            items.map((item, index) => {
+              const isDraggingCurrent = activeID === item.id;
+
+              return (
+                <Draggable id={item.id} key={item.id}>
+                  <CollapsibleItem
+                    item={item.title}
+                    index={item.id}
+                    isDragging={isDraggingCurrent}
+                    isStudentsList={true}
+                  >
+                    {item.students.map((student) => {
+                      return <CollapsibleStudent item={student.name} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' key={student.id}>
+                        <button className='bg-red-500 w-full py-2 hover:bg-red-600 rounded-md font-bold' onClick={{}}>Remove Student</button>
+                      </CollapsibleStudent>
+                    })}
+                  </CollapsibleItem>
+                </Draggable>
+              );
+            })
+          )}
+        </ul>
+      </div>
+    </div>
+
+  );
+};
+
+export function CollapsibleStudent({ item, index, children, className='' }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <li
+      key={index}
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsOpen(!isOpen)
+      }}
+      className={`bg-blue-50 py-3 px-5 rounded-lg text-gray-900 font-medium drop-shadow-md transition-colors hover:bg-blue-400 cursor-pointer ${className}`}
+    >
+      <div
+        className="flex justify-between items-center select-none"
+      >
+        {item}
+        <span className={`text-xl transition-transform duration-200 ease-in-out text-white ${isOpen ? 'rotate-45' : 'rotate-0'}`}> + </span>
+      </div>
+
+      {isOpen && (
+        <div className={`flex flex-col justify-start items-start w-full pt-3`}>
+          {children}
+        </div>
+      )}
+    </li>
+  );
+}
+
+export function CollapsibleItem({ item, index, isDragging, isStudentsList = false, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -83,15 +153,16 @@ export function CollapsibleItem({ item, index, isDragging, children }) {
       className={`bg-blue-50 mb-3 py-3 px-5 rounded-lg text-gray-900 font-medium drop-shadow-md transition-colors hover:bg-gray-100 cursor-pointer ${isDragging ? 'opacity-0' : 'opacity-100'}`}
     >
       <div
-        className="flex justify-between items-center"
+        className="flex justify-between items-center select-none"
       >
         {item}
         <span className={`text-xl transition-transform duration-200 ease-in-out text-gray-400 ${isOpen ? 'rotate-45' : 'rotate-0'}`}> + </span>
       </div>
 
       {isOpen && (
-        <div className="w-full mt-3 text-sm italic text-gray-500 p-3">
-          {children}
+        <div className={`w-full mt-3 text-sm p-3 ${!isStudentsList ? 'italic text-gray-500' : ''}`}>
+          {isStudentsList && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
+          <div className='grid grid-cols-2 items-start gap-2 pt-3'>{children}</div>
         </div>
       )}
     </li>
@@ -168,4 +239,33 @@ export function DragOverlayWrapper({ course }) {
 
 export function SubmitButton({ text, onClick }) {
   return <button onClick={onClick} type="submit" className='w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-3 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none mt-5'>{text}</button>
+}
+
+export function CoursesList({ title, subtitle, courses, className = '', activeId, children = null }) {
+  return (
+    <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
+      <StylishList title={title} subtitle={subtitle} items={courses} activeID={activeId}></StylishList>
+      {children}
+    </div>
+  );
+};
+
+export function ColumnsCoursesList({ title, subtitle, courses, className = '', activeId, children = null }) {
+  return (
+    <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
+      <ColumnsList title={title} subtitle={subtitle} items={courses} activeID={activeId}></ColumnsList>
+      {children}
+    </div>
+  );
+};
+
+export function SearchBar ({ searchText, handleChange }) {
+  return (
+    <div className='flex w-full items-center bg-white p-4 rounded-3xl shadow-lg gap-5'>
+      <svg style={{ color: 'gray' }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+      </svg>
+      <SearchInput placeholder='Search for a course...' name="search" value={searchText} onChange={handleChange} />
+    </div>
+  );
 }

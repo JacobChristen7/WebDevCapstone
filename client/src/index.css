@@ -8,7 +8,7 @@
 
 body {
     /* These properties make the background image scale dynamically based on viewport width and height */
-    background-image: url(background.jpg);
+    background-image: url(assets/background.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -20,4 +20,16 @@ body {
 
 .all-unset {
     all: unset;
+}
+
+.admin-background {
+    /* These properties make the background image scale dynamically based on viewport width and height */
+    background-image: url(assets/blue-hex-background.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
 }
