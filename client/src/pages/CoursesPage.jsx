@@ -101,6 +101,14 @@ export default function CoursesPage() {
     setActiveCourse(null);
   }
 
+  function showRegistrationAlert() {
+    if (confirm("Are you sure? This cannot be undone.") === true) {
+      //make database update that they want to register these classes
+      setRegisteredCourses(selectedCourses)
+      setSelectedCourses(null)
+    }
+  }
+
   return (
     <div className='flex flex-col items-center pt-10 pb-20 h-screen overflow-y-auto box-border gap-5'>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
@@ -115,8 +123,10 @@ export default function CoursesPage() {
             </Droppable>
             <Droppable id="selected" className='w-1/2'>
               <div className='flex flex-col w-full'>
-                <CoursesList title="Selected Courses" courses={selectedCourses} className='w-full' activeId={activeCourse?.id ?? 0}></CoursesList>
-                <SubmitButton text={"Confirm Registration"} onClick={{}} />
+                <CoursesList title="Selected Courses" courses={selectedCourses} className='w-full flex-col' activeId={activeCourse?.id ?? 0}>
+                  <SubmitButton text={"Confirm Registration"} onClick={showRegistrationAlert} />
+                </CoursesList>
+                
               </div>
             </Droppable>
             <DragOverlayWrapper course={activeCourse} />
@@ -138,10 +148,11 @@ const SearchBar = ({ searchText, handleChange }) => {
   );
 }
 
-const CoursesList = ({ title, subtitle, courses, className = '', activeId }) => {
+const CoursesList = ({ title, subtitle, courses, className = '', activeId, children = null }) => {
   return (
     <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
       <StylishList title={title} subtitle={subtitle} items={courses} activeID={activeId}></StylishList>
+      {children}
     </div>
   );
 };
