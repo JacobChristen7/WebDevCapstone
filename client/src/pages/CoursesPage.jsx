@@ -115,7 +115,7 @@ const filteredCourses = availableCourses
   return (
     <div className='flex flex-col items-center pt-10 pb-20 h-screen overflow-y-auto box-border gap-5'>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
-        <CoursesList title="Registered Courses" courses={registeredCourses}></CoursesList>
+        <CoursesList title="Registered Courses" courses={registeredCourses} className='w-full max-h-[500px]'></CoursesList>
       </div>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
         <SearchBar searchText={searchText} handleChange={handleChange}></SearchBar>
