@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input, SubmitButton } from './Components';
 
 export default function ProfilePage() {
+  const userID = 2 // Change this value to switch users
   const [form, setForm] = useState(null);
   const [savedProfile, setSavedProfile] = useState(null);
 
@@ -13,7 +14,7 @@ export default function ProfilePage() {
   // updates user info in the database
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/users/2', { // Change number with the id you want from user database
+      const response = await fetch(`/api/users/${userID}`, { // Change number with the id you want from user database
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -45,7 +46,7 @@ export default function ProfilePage() {
 
   // Gets user info from the database
   useEffect(() => {
-    fetch('/api/users/2') // Change number with the id you want from user database
+    fetch(`/api/users/${userID}`) // Change number with the id you want from user database
       .then(res => res.json())
       .then(data => {
         setForm({
