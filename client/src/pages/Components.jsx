@@ -162,7 +162,7 @@ export function CollapsibleItem({ item, index, isDragging, isStudentsList = fals
       {isOpen && (
         <div className={`w-full mt-3 text-sm p-3 ${!isStudentsList ? 'italic text-gray-500' : ''}`}>
           {isStudentsList && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
-          <div className='grid grid-cols-2 items-start gap-2 pt-3'>{children}</div>
+          <div className={`${isStudentsList ? 'grid grid-cols-2 items-start gap-2 pt-3' : ''}`}>{children}</div>
         </div>
       )}
     </li>
@@ -259,13 +259,13 @@ export function ColumnsCoursesList({ title, subtitle, courses, className = '', a
   );
 };
 
-export function SearchBar ({ searchText, handleChange }) {
+export function SearchBar ({ searchText, placeholder, handleChange }) {
   return (
     <div className='flex w-full items-center bg-white p-4 rounded-3xl shadow-lg gap-5'>
       <svg style={{ color: 'gray' }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
       </svg>
-      <SearchInput placeholder='Search for a course...' name="search" value={searchText} onChange={handleChange} />
+      <SearchInput placeholder={placeholder} name="search" value={searchText} onChange={handleChange} />
     </div>
   );
 }

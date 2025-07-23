@@ -56,20 +56,31 @@ export default function AdminPage() {
     }
   ];  
 
-  const [searchText, setSearchText] = useState("")
+  const [coursesSearchText, setCoursesSearchText] = useState("")
+  const [studentsSearchText, setStudentsSearchText] = useState("")
+
   const [registeredCourses, setRegisteredCourses] = useState([])
   const [availableCourses, setAvailableCourses] = useState(sampleItems)
+  const [students, setStudents] = useState(sampleItems.flatMap(item => item.students))
   const [selectedCourses, setSelectedCourses] = useState([])
 
   //this state tracks the currently dragged course
   const [activeCourse, setActiveCourse] = useState(null)
 
-  const handleChange = (e) => {
-    setSearchText(e.target.value)
+  const handleCoursesSearchTextChanged = (e) => {
+    setCoursesSearchText(e.target.value)
+  }
+
+  const handleStudentsSearchTextChanged = (e) => {
+    setStudentsSearchText(e.target.value)
   }
 
   const filteredCourses = availableCourses.filter(course => {
-    return course.title.toLowerCase().includes(searchText.toLowerCase())
+    return course.title.toLowerCase().includes(coursesSearchText.toLowerCase())
+  })
+
+  const filteredStudents = students.filter(student => {
+    return student.name.toLowerCase().includes(studentsSearchText.toLowerCase())
   })
 
   function showRegistrationAlert() {
@@ -84,13 +95,13 @@ export default function AdminPage() {
     <div class="admin-background" >
       <div className='flex flex-col items-center pt-10 pb-20 h-screen overflow-y-auto box-border gap-5'>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
-          <SearchBar searchText={searchText} handleChange={handleChange}></SearchBar>
+          <SearchBar searchText={coursesSearchText} placeholder='Search for a course...' handleChange={handleCoursesSearchTextChanged}></SearchBar>
           <ColumnsCoursesList title="All Courses" subtitle="Expand to view enrolled students" courses={filteredCourses} className='h-[400px] columns-2'></ColumnsCoursesList>
         </div>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
-          
+        <SearchBar searchText={studentsSearchText} placeholder='Search for a student...' handleChange={handleStudentsSearchTextChanged}></SearchBar>
           <div className='flex gap-10'>
-            <CoursesList title="Students" subtitle="Drag and drop to add a course" courses={filteredCourses} className='w-full h-[500px]' activeId={0}></CoursesList>
+            <CoursesList title="Students" subtitle="" courses={filteredStudents} className='w-full h-[500px]' activeId={0}></CoursesList>
             <div className='flex flex-col w-full'>
               <CoursesList title="Selected Courses" courses={selectedCourses} className='w-full flex-col' activeId={0}>
                 <SubmitButton text={"Confirm Registration"} onClick={showRegistrationAlert} />

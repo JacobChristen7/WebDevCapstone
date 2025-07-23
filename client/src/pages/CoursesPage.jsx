@@ -115,7 +115,7 @@ export default function CoursesPage() {
         <CoursesList title="Registered Courses" courses={registeredCourses}></CoursesList>
       </div>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
-        <SearchBar searchText={searchText} handleChange={handleChange}></SearchBar>
+        <SearchBar searchText={searchText} placeholder='Search for a course...' handleChange={handleChange}></SearchBar>
         <div className='flex gap-10'>
           <DndContext sensors={[useSensor(PointerSensor, { activationConstraint: { distance: 5, }, })]} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <Droppable id="available" className='w-1/2'>
