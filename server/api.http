@@ -1,3 +1,7 @@
+@userID = 2
+@courseID = 15
+@registrationID = 1
+
 ### User api requests
 POST http://localhost:3001/api/users
 Content-Type: application/json
@@ -13,7 +17,7 @@ Content-Type: application/json
 }
 ###
 
-PUT http://localhost:3001/api/users/3
+PUT http://localhost:3001/api/users/{{userID}}
 Content-Type: application/json
 
 {
@@ -27,7 +31,7 @@ Content-Type: application/json
 }
 ###
 
-DELETE http://localhost:3001/api/users/3
+DELETE http://localhost:3001/api/users/{{userID}}
 ###
 
 ### Courses api requests
@@ -41,7 +45,7 @@ Content-Type: application/json
   "capacity": 20
 }
 ###
-PUT http://localhost:3001/api/courses/21
+PUT http://localhost:3001/api/courses/{{courseID}}
 Content-Type: application/json
 
 {
@@ -52,7 +56,7 @@ Content-Type: application/json
 }
 ###
 
-DELETE http://localhost:3001/api/courses/21
+DELETE http://localhost:3001/api/courses/{{courseID}}
 ###
 
 ### Registration api requests
@@ -69,7 +73,7 @@ Content-Type: application/json
 ###
 
 ### Update a registration
-PUT http://localhost:3001/api/registrations/3
+PUT http://localhost:3001/api/registrations/{{registrationID}}
 Content-Type: application/json
 
 {
@@ -80,5 +84,5 @@ Content-Type: application/json
 ###
 
 ### Delete a registration
-DELETE http://localhost:3001/api/registrations/4
+DELETE http://localhost:3001/api/registrations/{{registrationID}}
 
