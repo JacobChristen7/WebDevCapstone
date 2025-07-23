@@ -1,58 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Droppable, DragOverlayWrapper, SearchInput, StylishList, SubmitButton } from './Components';
 import { DndContext, useSensor, PointerSensor } from '@dnd-kit/core';
 
 export default function CoursesPage() {
-  const sampleItems = [
-    {
-      id: 1,
-      title: "Introduction to Psychology",
-      description: "An overview of the scientific study of behavior and mental processes, covering topics like cognition, development, personality, and mental health."
-    },
-    {
-      id: 2,
-      title: "Calculus I",
-      description: "A foundational mathematics course focusing on limits, derivatives, and integrals of functions of one variable."
-    },
-    {
-      id: 3,
-      title: "English Literature",
-      description: "Study of significant works of English literature, emphasizing analysis, critical thinking, and historical context."
-    },
-    {
-      id: 4,
-      title: "Principles of Economics",
-      description: "Introduction to microeconomics and macroeconomics, covering topics like supply and demand, markets, inflation, and fiscal policy."
-    },
-    {
-      id: 5,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    },
-    {
-      id: 6,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    },
-    {
-      id: 7,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    },
-    {
-      id: 8,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    }
-  ];
-
-  const [searchText, setSearchText] = useState("")
-  const [registeredCourses, setRegisteredCourses] = useState([])
-  const [availableCourses, setAvailableCourses] = useState(sampleItems)
-  const [selectedCourses, setSelectedCourses] = useState([])
-
+  const [searchText, setSearchText] = useState("");
+  const [registeredCourses, setRegisteredCourses] = useState([]);
+  const [availableCourses, setAvailableCourses] = useState([]);
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  
   //this state tracks the currently dragged course
-  const [activeCourse, setActiveCourse] = useState(null)
+  const [activeCourse, setActiveCourse] = useState(null);
+
+  useEffect(() => {
+  fetch('/api/courses')
+    .then(res => res.json())
+    .then(data => {
+      // Mapped to display with the code we already made
+      const mapped = data.map(course => ({
+        ...course,
+        title: course.name
+      }));
+      setAvailableCourses(mapped);
+    })
+    .catch(err => console.error('Failed to fetch courses:', err));
+}, []);
+
+  useEffect(() => {
+  fetch('/api/users/2/registered-courses')
+    .then(res => res.json())
+    .then(data => {
+      // Mapped to match the display logic
+      const mapped = data.map(course => ({
+        ...course,
+        title: course.name
+      }));
+      setRegisteredCourses(mapped);
+    })
+    .catch(err => console.error('Failed to fetch registered courses:', err));
+}, []);
 
   const handleChange = (e) => {
     setSearchText(e.target.value)
