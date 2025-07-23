@@ -187,6 +187,23 @@ app.delete("/api/courses/:id", async (req, res) => {
   }
 });
 
+// Get all courses a user is registered for
+app.get("/api/users/:id/registered-courses", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const result = await pool.query(
+      `SELECT c.* FROM registrations r
+       JOIN courses c ON r.course_id = c.id
+       WHERE r.user_id = $1`,
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    logger.error("Error fetching registered courses: " + err.message);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 // Registrations Postgres Database API functions
 
 // Get all registrations

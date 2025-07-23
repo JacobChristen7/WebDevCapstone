@@ -1,66 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Droppable, DragOverlayWrapper, SearchInput, StylishList, SubmitButton, CoursesList, SearchBar } from './Components';
 import { DndContext, useSensor, PointerSensor } from '@dnd-kit/core';
 
 export default function CoursesPage() {
-  const sampleItems = [
-    {
-      id: 1,
-      title: "Introduction to Psychology",
-      description: "An overview of the scientific study of behavior and mental processes, covering topics like cognition, development, personality, and mental health."
-    },
-    {
-      id: 2,
-      title: "Calculus I",
-      description: "A foundational mathematics course focusing on limits, derivatives, and integrals of functions of one variable."
-    },
-    {
-      id: 3,
-      title: "English Literature",
-      description: "Study of significant works of English literature, emphasizing analysis, critical thinking, and historical context."
-    },
-    {
-      id: 4,
-      title: "Principles of Economics",
-      description: "Introduction to microeconomics and macroeconomics, covering topics like supply and demand, markets, inflation, and fiscal policy."
-    },
-    {
-      id: 5,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    },
-    {
-      id: 6,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    },
-    {
-      id: 7,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    },
-    {
-      id: 8,
-      title: "General Chemistry",
-      description: "Covers basic principles of chemistry including atomic structure, chemical bonding, reactions, and thermodynamics."
-    }
-  ];
-
-  const [searchText, setSearchText] = useState("")
-  const [registeredCourses, setRegisteredCourses] = useState([])
-  const [availableCourses, setAvailableCourses] = useState(sampleItems)
-  const [selectedCourses, setSelectedCourses] = useState([])
-
+  const userId = 2; // Change this value to switch users
+  const [searchText, setSearchText] = useState("");
+  const [registeredCourses, setRegisteredCourses] = useState([]);
+  const [availableCourses, setAvailableCourses] = useState([]);
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  
   //this state tracks the currently dragged course
-  const [activeCourse, setActiveCourse] = useState(null)
+  const [activeCourse, setActiveCourse] = useState(null);
+
+  useEffect(() => {
+  fetch('/api/courses')
+    .then(res => res.json())
+    .then(data => {
+      // Mapped to display with the code we already made
+      const mapped = data.map(course => ({
+        ...course,
+        title: course.name
+      }));
+      setAvailableCourses(mapped);
+    })
+    .catch(err => console.error('Failed to fetch courses:', err));
+}, []);
+
+  useEffect(() => {
+  fetch(`/api/users/${userId}/registered-courses`)
+    .then(res => res.json())
+    .then(data => {
+      // Mapped to match the display code logic
+      const mapped = data.map(course => ({
+        ...course,
+        title: course.name
+      }));
+      setRegisteredCourses(mapped);
+    })
+    .catch(err => console.error('Failed to fetch registered courses:', err));
+}, []);
 
   const handleChange = (e) => {
     setSearchText(e.target.value)
   }
 
-  const filteredCourses = availableCourses.filter(course => {
-    return course.title.toLowerCase().includes(searchText.toLowerCase())
-  })
+// Filter out available courses that the user is already registered for
+const filteredCourses = availableCourses
+  .filter(course => !registeredCourses.some(rc => rc.id === course.id))
+  .filter(course => course.title.toLowerCase().includes(searchText.toLowerCase()));
+
 
   function handleDragStart(event) {
     const draggedId = event.active.id;
@@ -101,18 +89,33 @@ export default function CoursesPage() {
     setActiveCourse(null);
   }
 
-  function showRegistrationAlert() {
+  async function showRegistrationAlert() {
     if (confirm("Are you sure? This cannot be undone.") === true) {
-      //make database update that they want to register these classes
-      setRegisteredCourses(selectedCourses)
-      setSelectedCourses(null)
+      await Promise.all(selectedCourses.map(course =>
+        fetch('/api/registrations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: userId,
+            course_id: course.id
+          })
+        })
+      ));
+      const res = await fetch(`/api/users/${userId}/registered-courses`);
+      const data = await res.json();
+      const mapped = data.map(course => ({
+        ...course,
+        title: course.name
+      }));
+      setRegisteredCourses(mapped)
+      setSelectedCourses([])
     }
   }
 
   return (
     <div className='flex flex-col items-center pt-10 pb-20 h-screen overflow-y-auto box-border gap-5'>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
-        <CoursesList title="Registered Courses" courses={registeredCourses}></CoursesList>
+        <CoursesList title="Registered Courses" courses={registeredCourses} className='w-full max-h-[500px]'></CoursesList>
       </div>
       <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
         <SearchBar searchText={searchText} placeholder='Search for a course...' handleChange={handleChange}></SearchBar>
