@@ -3,6 +3,7 @@ import { Droppable, DragOverlayWrapper, SearchInput, StylishList, SubmitButton }
 import { DndContext, useSensor, PointerSensor } from '@dnd-kit/core';
 
 export default function CoursesPage() {
+  const userId = 2; // Change this value to switch users
   const [searchText, setSearchText] = useState("");
   const [registeredCourses, setRegisteredCourses] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
@@ -26,7 +27,7 @@ export default function CoursesPage() {
 }, []);
 
   useEffect(() => {
-  fetch('/api/users/2/registered-courses')
+  fetch(`/api/users/${userId}/registered-courses`)
     .then(res => res.json())
     .then(data => {
       // Mapped to match the display code logic
@@ -88,11 +89,26 @@ const filteredCourses = availableCourses
     setActiveCourse(null);
   }
 
-  function showRegistrationAlert() {
+  async function showRegistrationAlert() {
     if (confirm("Are you sure? This cannot be undone.") === true) {
-      //make database update that they want to register these classes
-      setRegisteredCourses(selectedCourses)
-      setSelectedCourses(null)
+      await Promise.all(selectedCourses.map(course =>
+        fetch('/api/registrations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: userId,
+            course_id: course.id
+          })
+        })
+      ));
+      const res = await fetch(`/api/users/${userId}/registered-courses`);
+      const data = await res.json();
+      const mapped = data.map(course => ({
+        ...course,
+        title: course.name
+      }));
+      setRegisteredCourses(mapped)
+      setSelectedCourses([])
     }
   }
 
