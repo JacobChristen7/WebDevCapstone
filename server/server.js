@@ -3,6 +3,14 @@ const path = require("path");
 const morgan = require("morgan");
 const winston = require("winston");
 
+const bcrypt = require("bcrypt")
+
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+
+const passport = require('passport');
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
+
 const PORT = process.env.PORT || 3001;
 
 const app = express();
@@ -27,10 +35,49 @@ pool.query("SELECT NOW()", (err, res) => {
   }
 });
 
+// JWT strategy
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: JWT_SECRET,
+};
+
+passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [jwt_payload.id]);
+    const user = result.rows[0];
+    if (user) return done(null, user);
+    else return done(null, false);
+  } catch (err) {
+    return done(err, false);
+  }
+}));
+
+app.use(passport.initialize());
+
 // User Postgres Database API functions
 
+// User login
+app.post('/api/login', express.json(), async (req, res) => {
+  const { username, password } = req.body;
+  // 1. Find user by username
+  const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+  const user = result.rows[0];
+  if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+  // 2. Compare password
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.status(401).json({ error: 'Invalid credentials' });
+
+  // 3. Sign JWT
+  const token = jwt.sign({ id: user.id, admin: user.admin }, JWT_SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
+
 // Get all users
-app.get("/api/users", async (req, res) => {
+app.get("/api/users", passport.authenticate('jwt', { session: false }), async (req, res) => {
+  if (!req.user.admin) {
+    return res.status(403).json({ error: "Forbidden: Admins only" });
+  }
   try {
     const result = await pool.query("SELECT * FROM users");
     logger.info(`Fetched all users: count=${result.rows.length}`);
@@ -42,7 +89,7 @@ app.get("/api/users", async (req, res) => {
 });
 
 // Get a user by ID
-app.get("/api/users/:id", async (req, res) => {
+app.get("/api/users/:id", passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users WHERE id = $1", [req.params.id]);
     if (result.rows.length === 0) {
@@ -59,11 +106,14 @@ app.get("/api/users/:id", async (req, res) => {
 
 // Create a new user
 app.post("/api/users", express.json(), async (req, res) => {
-  const { username, email, firstname, lastname, telephone, address, admin, aboutMe } = req.body;
+  const { username, email, firstname, lastname, telephone, address, admin, aboutMe, password } = req.body;
   try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const result = await pool.query(
-      'INSERT INTO users (username, email, firstname, lastname, telephone, address, admin, "aboutMe") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-      [username, email, firstname, lastname, telephone, address, admin, aboutMe]
+      'INSERT INTO users (username, email, firstname, lastname, telephone, address, admin, "aboutMe", password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [username, email, firstname, lastname, telephone, address, admin, aboutMe, hashedPassword]
     );
     logger.info(`User created: ${JSON.stringify(result.rows[0])}`);
     res.status(201).json(result.rows[0]);
@@ -74,7 +124,10 @@ app.post("/api/users", express.json(), async (req, res) => {
 });
 
 // Update a user's info
-app.put("/api/users/:id", express.json(), async (req, res) => {
+app.put("/api/users/:id", passport.authenticate('jwt', { session: false }), express.json(), async (req, res) => {
+  if (req.user.id !== parseInt(req.params.id) && !req.user.admin) {
+  return res.status(403).json({ error: "Forbidden" });
+}
   const { username, email, firstname, lastname, telephone, address, admin, aboutMe } = req.body;
   try {
     const result = await pool.query(
@@ -94,7 +147,10 @@ app.put("/api/users/:id", express.json(), async (req, res) => {
 });
 
 // Delete a user
-app.delete("/api/users/:id", async (req, res) => {
+app.delete("/api/users/:id", passport.authenticate('jwt', { session: false }), async (req, res) => {
+  if (req.user.id !== parseInt(req.params.id) && !req.user.admin) {
+  return res.status(403).json({ error: "Forbidden" });
+}
   try {
     const result = await pool.query(
       "DELETE FROM users WHERE id = $1 RETURNING *",
@@ -138,8 +194,10 @@ app.get("/api/courses/:id", async (req, res) => {
 });
 
 // Create a course
-
-app.post("/api/courses", express.json(), async (req, res) => {
+app.post("/api/courses", passport.authenticate('jwt', { session: false }), express.json(), async (req, res) => {
+  if (!req.user.admin) {
+    return res.status(403).json({ error: "Forbidden: Admins only" });
+  }
   const { name, description, credits, capacity } = req.body;
   try {
     const result = await pool.query(
@@ -153,8 +211,10 @@ app.post("/api/courses", express.json(), async (req, res) => {
 });
 
 // Update a course
-
-app.put("/api/courses/:id", express.json(), async (req, res) => {
+app.put("/api/courses/:id", passport.authenticate('jwt', { session: false }), express.json(), async (req, res) => {
+  if (!req.user.admin) {
+    return res.status(403).json({ error: "Forbidden: Admins only" });
+  }
   const { name, description, credits, capacity } = req.body;
   try {
     const result = await pool.query(
@@ -171,8 +231,10 @@ app.put("/api/courses/:id", express.json(), async (req, res) => {
 });
 
 // Delete a course
-
-app.delete("/api/courses/:id", async (req, res) => {
+app.delete("/api/courses/:id", passport.authenticate('jwt', { session: false }), async (req, res) => {
+  if (!req.user.admin) {
+    return res.status(403).json({ error: "Forbidden: Admins only" });
+  }
   try {
     const result = await pool.query(
       "DELETE FROM courses WHERE id = $1 RETURNING *",
@@ -230,7 +292,7 @@ app.get("/api/registrations/:id", async (req, res) => {
 });
 
 // Create a registration
-app.post("/api/registrations", express.json(), async (req, res) => {
+app.post("/api/registrations", passport.authenticate('jwt', { session: false }), express.json(), async (req, res) => {
   const { user_id, course_id } = req.body;
   try {
     const result = await pool.query(
@@ -244,7 +306,7 @@ app.post("/api/registrations", express.json(), async (req, res) => {
 });
 
 // Update a registration
-app.put("/api/registrations/:id", express.json(), async (req, res) => {
+app.put("/api/registrations/:id", passport.authenticate('jwt', { session: false }), express.json(), async (req, res) => {
   const { user_id, course_id } = req.body;
   try {
     const result = await pool.query(
@@ -261,7 +323,7 @@ app.put("/api/registrations/:id", express.json(), async (req, res) => {
 });
 
 // Delete a registration
-app.delete("/api/registrations/:id", async (req, res) => {
+app.delete("/api/registrations/:id", passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const result = await pool.query(
       "DELETE FROM registrations WHERE id = $1 RETURNING *",

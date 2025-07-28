@@ -1,42 +1,59 @@
-@userID = 2
-@courseID = 15
-@registrationID = 1
+@userID = 13
+@courseID = 22
+@registrationID = 46
+
+@token = none
+### Login to get JWT token
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "JakeTheDog",
+  "password": "JakeAdmin123"
+}
 
 ### User api requests
 POST http://localhost:3001/api/users
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "username": "James23",
-  "email": "James@testmail.com",
-  "firstname": "James",
-  "lastname": "Smith",
+  "username": "HomieWithACat",
+  "email": "homie@testing.com",
+  "firstname": "Max",
+  "lastname": "Sutch",
   "telephone": "123-456-78910",
   "address": "123 Main",
-  "admin": false
+  "admin": false,
+  "aboutMe": "just testing stuff",
+  "password": "dopePassword"
 }
 ###
 
 PUT http://localhost:3001/api/users/{{userID}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "username": "TesterDon",
-  "email": "tester2@testmail.com",
-  "firstname": "Don",
-  "lastname": "Tester",
+  "username": "HomieWithACat",
+  "email": "homie@testing.com",
+  "firstname": "Max",
+  "lastname": "Rodes",
   "telephone": "585-5858",
   "address": "456 Birch St.",
-  "admin": true
+  "admin": false,
+  "aboutMe": ""
 }
 ###
 
 DELETE http://localhost:3001/api/users/{{userID}}
+Authorization: Bearer {{token}}
 ###
 
 ### Courses api requests
 POST http://localhost:3001/api/courses
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "name": "Test Course",
@@ -47,6 +64,7 @@ Content-Type: application/json
 ###
 PUT http://localhost:3001/api/courses/{{courseID}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "name": "Updated Course",
@@ -57,6 +75,7 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3001/api/courses/{{courseID}}
+Authorization: Bearer {{token}}
 ###
 
 ### Registration api requests
@@ -64,10 +83,11 @@ DELETE http://localhost:3001/api/courses/{{courseID}}
 ### Create a new registration
 POST http://localhost:3001/api/registrations
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "user_id": 2,
-  "course_id": 15
+  "user_id": 1,
+  "course_id": 20
 }
 
 ###
@@ -75,9 +95,10 @@ Content-Type: application/json
 ### Update a registration
 PUT http://localhost:3001/api/registrations/{{registrationID}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "user_id": 2,
+  "user_id": 1,
   "course_id": 2
 }
 
@@ -85,4 +106,5 @@ Content-Type: application/json
 
 ### Delete a registration
 DELETE http://localhost:3001/api/registrations/{{registrationID}}
+Authorization: Bearer {{token}}
 
