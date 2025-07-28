@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Input, SubmitButton } from './Components';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function ProfilePage() {
-  const userID = 2 // Change this value to switch users
+  const { user, token } = useContext(AuthContext);
+  const userID = user?.id;
   const [form, setForm] = useState(null);
   const [savedProfile, setSavedProfile] = useState(null);
 
@@ -14,9 +16,12 @@ export default function ProfilePage() {
   // updates user info in the database
   const handleSave = async () => {
     try {
-      const response = await fetch(`/api/users/${userID}`, { // Change number with the id you want from user database
+      const response = await fetch(`/api/users/${userID}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({
           username: form.username,
           email: form.email,
@@ -46,7 +51,12 @@ export default function ProfilePage() {
 
   // Gets user info from the database
   useEffect(() => {
-    fetch(`/api/users/${userID}`) // Change number with the id you want from user database
+    if (!userID) return;
+    fetch(`/api/users/${userID}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    })
       .then(res => res.json())
       .then(data => {
         setForm({
@@ -68,9 +78,13 @@ export default function ProfilePage() {
           aboutMe: data.aboutMe || '',
         });
       });
-  }, []);
+  }, [userID, token]);
 
-  if (!form || !savedProfile) { // Loading reqired for fetch
+  if (!userID) {
+    return <div className="text-center mt-10 text-xl">You must be logged in to view your profile.</div>;
+  }
+
+  if (!form || !savedProfile) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="text-4xl font-bold text-blue-600 animate-pulse drop-shadow-lg">
