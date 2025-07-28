@@ -100,7 +100,7 @@ export default function ProfilePage() {
                 <Input label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} name="aboutMe" value={form.aboutMe} onChange={handleChange} />
               </div>
 
-              <SubmitButton text={"Save Edits"} onClick={handleSave} />
+              <SubmitButton text={"Save Edits"} onClick={handleSave} className="mt-5"/>
             </div>
           </div>
         </div>

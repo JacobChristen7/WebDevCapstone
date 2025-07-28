@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 export const ViewMode = {
   STUDENTS: "students",
-  CLASSES: "classes", 
+  CLASSES: "classes",
   DESCRIPTION: "description",
 }
 
@@ -176,12 +176,30 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
 
       {isOpen && (
         <div className={`w-full mt-3 text-sm p-3 ${viewMode === ViewMode.DESCRIPTION ? 'italic text-gray-500' : ''}`}>
-          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description:"} value={null} className='mb-10'></LabeledInput>}
           {viewMode === ViewMode.STUDENTS && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
           {viewMode === ViewMode.CLASSES && <span className="italic text-gray-500">Currently Enrolled Classes:</span>}
-          <div className={`${viewMode !== ViewMode.DESCRIPTION ? 'grid grid-cols-2 items-start gap-2 pt-3' : ''}`}>{children}</div>
-          {viewMode === ViewMode.STUDENTS && <DeleteButton text="Permanently Delete Class" onClick={null} className="mt-5"></DeleteButton>}
-          {viewMode === ViewMode.CLASSES && <DeleteButton text="Permanently Delete User" onClick={null} className="mt-5"></DeleteButton>}
+          <div className={`${viewMode !== ViewMode.DESCRIPTION ? 'grid grid-cols-2 items-start gap-2 pt-3 mb-10' : ''}`}>{children}</div>
+          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description:"} value={null} className='mb-1 px-0.5'></LabeledInput>}
+          {viewMode === ViewMode.STUDENTS &&
+            <div className='flex flex-row gap-2 items-center mt-8'>
+              <DeleteButton text="Remove Class" onClick={null} className=""></DeleteButton>
+              <SubmitButton text="Save Changes" onClick={null} className=''></SubmitButton>
+            </div>}
+
+          {viewMode === ViewMode.CLASSES &&
+            <div className='flex flex-col gap-2'>
+              <LabeledInput label={"Username"} value={null}></LabeledInput>
+              <LabeledInput label={"Email"} value={null}></LabeledInput>
+              <LabeledInput label={"First Name"} value={null}></LabeledInput>
+              <LabeledInput label={"Last Name"} value={null}></LabeledInput>
+              <LabeledInput label={"Address"} value={null}></LabeledInput>
+              <LabeledInput label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} value={null} className='mb-1'></LabeledInput>
+              <div className='flex flex-row gap-2 items-center mt-6'>
+                <DeleteButton text="Remove User" onClick={null} className=""></DeleteButton>
+                <SubmitButton text="Save Changes" onClick={null} className=''></SubmitButton>
+              </div>
+            </div>
+          }
         </div>
       )}
     </li>
@@ -194,11 +212,11 @@ export function LabeledInput({
   onChange,
   type = 'text',
   required = false,
-  width = 'w-[200px]',
+  width = 'w-[250px]',
   className = ''
 }) {
   return (
-    <div className={`flex w-full justify-between items-center pr-1 ${className}`}>
+    <div className={`flex w-full justify-between items-center ${className}`}>
       <label>{label}</label>
       <input
         className={`bg-white placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-1 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow ${width}`}
@@ -260,8 +278,14 @@ export function DragOverlayWrapper({ course }) {
   );
 }
 
-export function SubmitButton({ text, onClick }) {
-  return <button onClick={onClick} type="submit" className='w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-3 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none mt-5'>{text}</button>
+export function SubmitButton({ text, onClick, className = '' }) {
+  return <button onClick={onClick} type="submit" className={`w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-3 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 focus:outline-none ${className}`}>{text}</button>
+}
+
+function DeleteButton({ text, onClick, className = '' }) {
+  return (
+    <button className={`bg-red-500 w-full py-2 hover:bg-red-600 rounded-md font-bold text-white ${className}`} onClick={onClick}>{text}</button>
+  );
 }
 
 export function CoursesList({ title, subtitle, courses, className = '', activeId, children = null }) {
@@ -290,11 +314,5 @@ export function SearchBar({ searchText, placeholder, handleChange }) {
       </svg>
       <SearchInput placeholder={placeholder} name="search" value={searchText} onChange={handleChange} />
     </div>
-  );
-}
-
-function DeleteButton({ text, onClick, className = '' }) {
-  return(
-    <button className={`bg-red-500 w-full py-2 hover:bg-red-600 rounded-md font-bold text-white ${className}`} onClick={onClick}>{text}</button>
   );
 }
