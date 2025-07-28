@@ -34,8 +34,8 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen text-black">
       <form onSubmit={handleLogin} className='flex flex-col items-center bg-gray-500/30 backdrop-blur-lg w-2/5 m-auto rounded-lg p-10 gap-2'>
         <div className='mb-5 w-full text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] font-bold text-3xl'>Subpar University</div>
-        <LabeledInput label={"Username:"} value={username}></LabeledInput>
-        <LabeledInput label={"Password:"} value={password} type={"password"}></LabeledInput>
+        <LabeledInput label={"Username:"} value={username} onChange={((e) => setUsername(e.target.value))}></LabeledInput>
+        <LabeledInput label={"Password:"} value={password} type={"password"} onChange={((e) => setPassword(e.target.value))}></LabeledInput>
 
         <SubmitButton text={"Login"} onClick={{}} />
         {error && <p style={{ color: 'red' }}>{error}</p>}
