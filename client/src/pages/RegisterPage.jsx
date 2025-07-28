@@ -111,7 +111,7 @@ export default function RegisterPage() {
           onChange={e => setForm({ ...form, aboutMe: e.target.value })}
         />
 
-        <SubmitButton text={"Confirm Registration"} onClick={{}} />
+        <SubmitButton text={"Confirm Registration"} onClick={null} />
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     </div>

@@ -37,7 +37,7 @@ export default function LoginPage() {
         <LabeledInput label={"Username:"} value={username}></LabeledInput>
         <LabeledInput label={"Password:"} value={password} type={"password"}></LabeledInput>
 
-        <SubmitButton text={"Login"} onClick={{}} />
+        <SubmitButton text={"Login"} onClick={null} className="mt-5" />
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     </div>
