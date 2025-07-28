@@ -129,7 +129,6 @@ const filteredCourses = availableCourses
                 <CoursesList title="Selected Courses" courses={selectedCourses} className='w-full flex-col' activeId={activeCourse?.id ?? 0}>
                   <SubmitButton text={"Confirm Registration"} onClick={showRegistrationAlert} />
                 </CoursesList>
-                
               </div>
             </Droppable>
             <DragOverlayWrapper course={activeCourse} />
