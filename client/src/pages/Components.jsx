@@ -3,6 +3,12 @@ import { closestCenter, DndContext, useDroppable, DragOverlay } from '@dnd-kit/c
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 
+export const ViewMode = {
+  STUDENTS: "students",
+  CLASSES: "classes",
+  DESCRIPTION: "description",
+}
+
 // Simple reusable input component
 export function Input({ label, name, value, onChange, type = 'text' }) {
   return (
@@ -56,7 +62,7 @@ export function StylishList({ title, subtitle, items, activeID }) {
               return (
                 <Draggable id={item.id} key={item.id}>
                   <CollapsibleItem
-                    item={item.title}
+                    item={item.title == null ? item.name : item.title}
                     index={item.id}
                     isDragging={isDraggingCurrent}
                   >
@@ -73,8 +79,9 @@ export function StylishList({ title, subtitle, items, activeID }) {
   );
 };
 
-export function ColumnsList({ title, subtitle, items, activeID }) {
+export function ColumnsList({ title, subtitle, items, activeID, viewMode }) {
   const [isOpen, setIsOpen] = useState(false);
+  console.log("ColumnsList Items:", items);
 
   return (
     <div className='flex flex-col w-full'>
@@ -93,16 +100,24 @@ export function ColumnsList({ title, subtitle, items, activeID }) {
               return (
                 <Draggable id={item.id} key={item.id}>
                   <CollapsibleItem
-                    item={item.title}
+                    item={viewMode === ViewMode.CLASSES ? item.name : item.title}
                     index={item.id}
                     isDragging={isDraggingCurrent}
-                    isStudentsList={true}
+                    viewMode={viewMode}
                   >
-                    {item.students.map((student) => {
-                      return <CollapsibleStudent item={student.name} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' key={student.id}>
-                        <button className='bg-red-500 w-full py-2 hover:bg-red-600 rounded-md font-bold' onClick={{}}>Remove Student</button>
-                      </CollapsibleStudent>
-                    })}
+                    {viewMode === ViewMode.STUDENTS ? (
+                      item.students.map((student) => {
+                        return <CollapsibleSubItem item={student.name} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' key={student.id}>
+                          <DeleteButton text="Unenroll Student" onClick={null}></DeleteButton>
+                        </CollapsibleSubItem>
+                      })
+                    ) : (
+                      item.classes?.map((cls) => {
+                        return <CollapsibleSubItem item={cls.title} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' key={cls.id}>
+                          <DeleteButton text="Remove Class" onClick={null}></DeleteButton>
+                        </CollapsibleSubItem>
+                      })
+                    )}
                   </CollapsibleItem>
                 </Draggable>
               );
@@ -115,7 +130,7 @@ export function ColumnsList({ title, subtitle, items, activeID }) {
   );
 };
 
-export function CollapsibleStudent({ item, index, children, className='' }) {
+export function CollapsibleSubItem({ item, index, children, className = '' }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -143,7 +158,7 @@ export function CollapsibleStudent({ item, index, children, className='' }) {
   );
 }
 
-export function CollapsibleItem({ item, index, isDragging, isStudentsList = false, children }) {
+export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.DESCRIPTION, children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -160,9 +175,31 @@ export function CollapsibleItem({ item, index, isDragging, isStudentsList = fals
       </div>
 
       {isOpen && (
-        <div className={`w-full mt-3 text-sm p-3 ${!isStudentsList ? 'italic text-gray-500' : ''}`}>
-          {isStudentsList && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
-          <div className={`${isStudentsList ? 'grid grid-cols-2 items-start gap-2 pt-3' : ''}`}>{children}</div>
+        <div className={`w-full mt-3 text-sm p-3 ${viewMode === ViewMode.DESCRIPTION ? 'italic text-gray-500' : ''}`}>
+          {viewMode === ViewMode.STUDENTS && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
+          {viewMode === ViewMode.CLASSES && <span className="italic text-gray-500">Currently Enrolled Classes:</span>}
+          <div className={`${viewMode !== ViewMode.DESCRIPTION ? 'grid grid-cols-2 items-start gap-2 pt-3 mb-10' : ''}`}>{children}</div>
+          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description:"} value={null} className='mb-1 px-0.5'></LabeledInput>}
+          {viewMode === ViewMode.STUDENTS &&
+            <div className='flex flex-row gap-2 items-center mt-8'>
+              <DeleteButton text="Remove Class" onClick={null} className=""></DeleteButton>
+              <SubmitButton text="Save Changes" onClick={null} className=''></SubmitButton>
+            </div>}
+
+          {viewMode === ViewMode.CLASSES &&
+            <div className='flex flex-col gap-2'>
+              <LabeledInput label={"Username"} value={null}></LabeledInput>
+              <LabeledInput label={"Email"} value={null}></LabeledInput>
+              <LabeledInput label={"First Name"} value={null}></LabeledInput>
+              <LabeledInput label={"Last Name"} value={null}></LabeledInput>
+              <LabeledInput label={"Address"} value={null}></LabeledInput>
+              <LabeledInput label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} value={null} className='mb-1'></LabeledInput>
+              <div className='flex flex-row gap-2 items-center mt-6'>
+                <DeleteButton text="Remove User" onClick={null} className=""></DeleteButton>
+                <SubmitButton text="Save Changes" onClick={null} className=''></SubmitButton>
+              </div>
+            </div>
+          }
         </div>
       )}
     </li>
@@ -175,17 +212,21 @@ export function LabeledInput({
   onChange,
   type = 'text',
   required = false,
-  width = 'w-[200px]',
+  width = 'w-[250px]',
+  className = ''
 }) {
   return (
-    <div className='flex w-full justify-between pr-1'>
+    <div className={`flex w-full justify-between items-center ${className}`}>
       <label>{label}</label>
       <input
-        className={width}
+        className={`bg-white placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-1 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow ${width}`}
         type={type}
         value={value}
         onChange={onChange}
         required={required}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       />
     </div>
   );
@@ -237,8 +278,14 @@ export function DragOverlayWrapper({ course }) {
   );
 }
 
-export function SubmitButton({ text, onClick }) {
-  return <button onClick={onClick} type="submit" className='w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-3 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none mt-5'>{text}</button>
+export function SubmitButton({ text, onClick, className = '' }) {
+  return <button onClick={onClick} type="submit" className={`w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-3 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 focus:outline-none ${className}`}>{text}</button>
+}
+
+function DeleteButton({ text, onClick, className = '' }) {
+  return (
+    <button className={`bg-red-500 w-full py-2 hover:bg-red-600 rounded-md font-bold text-white ${className}`} onClick={onClick}>{text}</button>
+  );
 }
 
 export function CoursesList({ title, subtitle, courses, className = '', activeId, children = null }) {
@@ -250,16 +297,16 @@ export function CoursesList({ title, subtitle, courses, className = '', activeId
   );
 };
 
-export function ColumnsCoursesList({ title, subtitle, courses, className = '', activeId, children = null }) {
+export function ColumnsCoursesList({ title, subtitle, items, className = '', viewMode, activeId, children = null }) {
   return (
     <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
-      <ColumnsList title={title} subtitle={subtitle} items={courses} activeID={activeId}></ColumnsList>
+      <ColumnsList title={title} subtitle={subtitle} items={items} activeID={activeId} viewMode={viewMode}></ColumnsList>
       {children}
     </div>
   );
 };
 
-export function SearchBar ({ searchText, placeholder, handleChange }) {
+export function SearchBar({ searchText, placeholder, handleChange }) {
   return (
     <div className='flex w-full items-center bg-white p-4 rounded-3xl shadow-lg gap-5'>
       <svg style={{ color: 'gray' }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
