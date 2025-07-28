@@ -134,7 +134,7 @@ export default function AdminPage() {
 
   return (
     <div class="admin-background">
-      <div className='flex flex-col items-center pt-10 pb-20 h-screen overflow-y-auto box-border gap-5'>
+      <div className='flex flex-col items-center pt-20 pb-20 h-screen overflow-y-auto box-border gap-5'>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
           <SearchBar searchText={coursesSearchText} placeholder='Search for a course...' handleChange={handleCoursesSearchTextChanged}></SearchBar>
           <ColumnsCoursesList title="All Courses" subtitle="Expand to view enrolled students" items={filteredCourses} className='h-[500px] columns-2' viewMode={ViewMode.STUDENTS}></ColumnsCoursesList>
