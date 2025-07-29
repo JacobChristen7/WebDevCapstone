@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext.jsx';
 import { Droppable, DragOverlayWrapper, SearchInput, StylishList, SubmitButton, CoursesList, SearchBar } from './Components';
 import { DndContext, useSensor, PointerSensor } from '@dnd-kit/core';
 
 export default function CoursesPage() {
-  const userId = 2; // Change this value to switch users
+  const { user, token } = useContext(AuthContext);
+  const userId = user?.id;
   const [searchText, setSearchText] = useState("");
   const [registeredCourses, setRegisteredCourses] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
@@ -27,7 +29,12 @@ export default function CoursesPage() {
 }, []);
 
   useEffect(() => {
-  fetch(`/api/users/${userId}/registered-courses`)
+  if (!userId || !token) return;
+  fetch(`/api/users/${userId}/registered-courses`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    }
+  })
     .then(res => res.json())
     .then(data => {
       // Mapped to match the display code logic
@@ -38,7 +45,7 @@ export default function CoursesPage() {
       setRegisteredCourses(mapped);
     })
     .catch(err => console.error('Failed to fetch registered courses:', err));
-}, []);
+}, [userId, token]);
 
   const handleChange = (e) => {
     setSearchText(e.target.value)
@@ -94,7 +101,10 @@ const filteredCourses = availableCourses
       await Promise.all(selectedCourses.map(course =>
         fetch('/api/registrations', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
           body: JSON.stringify({
             user_id: userId,
             course_id: course.id
