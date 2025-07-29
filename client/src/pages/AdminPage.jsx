@@ -113,9 +113,6 @@ export default function AdminPage() {
   const [users, setUsers] = useState(sampleUsers)
   const [selectedCourses, setSelectedCourses] = useState([])
 
-  //this state tracks the currently dragged course
-  const [activeCourse, setActiveCourse] = useState(null)
-
   const handleCoursesSearchTextChanged = (e) => {
     setCoursesSearchText(e.target.value)
   }
@@ -131,6 +128,29 @@ export default function AdminPage() {
   const filteredUsers = users.filter(user => {
     return user.name.toLowerCase().includes(studentsSearchText.toLowerCase())
   })
+  
+  //example action handler code
+  function handleAction(type, payload) {
+    switch (type) {
+      case 'REMOVE_CLASS':
+        // const { userId, classId } = payload;
+        // // Do something meaningful in the backend here
+        console.log(`Remove class ${payload.classId} from user ${payload.userId}`);
+        
+        break;
+      case 'UNENROLL_STUDENT':
+        console.log(`Unenroll student ${payload.studentId} from class ${payload.classId}`);
+        break;
+      case 'DELETE_USER':
+        console.log(`Delete user ${payload.userId}`);
+        break;
+      case 'SAVE_CHANGES':
+        console.log(`Save changes for ${payload.entityType} ${payload.id}`);
+        break;
+      default:
+        console.warn(`Unknown action type: ${type}`);
+    }
+  }
 
   return (
     <div class="admin-background">
@@ -142,7 +162,7 @@ export default function AdminPage() {
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
         <SearchBar searchText={studentsSearchText} placeholder='Search for a user...' handleChange={handleStudentsSearchTextChanged}></SearchBar>
           <div className='flex gap-10'>
-            <ColumnsCoursesList title="All Users" subtitle="Expand to view detail" items={filteredUsers} className='w-full h-[500px]' viewMode={ViewMode.CLASSES} activeId={0}></ColumnsCoursesList>
+            <ColumnsCoursesList title="All Users" subtitle="Expand to view detail" items={filteredUsers} className='w-full h-[500px]' viewMode={ViewMode.CLASSES} activeId={0} onAction={handleAction}></ColumnsCoursesList>
           </div>
         </div>
       </div>

@@ -79,7 +79,7 @@ export function StylishList({ title, subtitle, items, activeID }) {
   );
 };
 
-export function ColumnsList({ title, subtitle, items, activeID, viewMode }) {
+export function ColumnsList({ title, subtitle, items, activeID, viewMode, onAction }) {
   const [isOpen, setIsOpen] = useState(false);
   console.log("ColumnsList Items:", items);
 
@@ -114,7 +114,7 @@ export function ColumnsList({ title, subtitle, items, activeID, viewMode }) {
                     ) : (
                       item.classes?.map((cls) => {
                         return <CollapsibleSubItem item={cls.title} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' key={cls.id}>
-                          <DeleteButton text="Remove Class" onClick={null}></DeleteButton>
+                          <DeleteButton text="Remove Class" onClick={() => onAction('REMOVE_CLASS', {  })}></DeleteButton>
                         </CollapsibleSubItem>
                       })
                     )}
@@ -297,10 +297,10 @@ export function CoursesList({ title, subtitle, courses, className = '', activeId
   );
 };
 
-export function ColumnsCoursesList({ title, subtitle, items, className = '', viewMode, activeId, children = null }) {
+export function ColumnsCoursesList({ title, subtitle, items, className = '', viewMode, activeId, onAction, children = null }) {
   return (
     <div className={`flex bg-white shadow-lg rounded-2xl p-8 ${className}`}>
-      <ColumnsList title={title} subtitle={subtitle} items={items} activeID={activeId} viewMode={viewMode}></ColumnsList>
+      <ColumnsList title={title} subtitle={subtitle} items={items} activeID={activeId} viewMode={viewMode} onAction={onAction}></ColumnsList>
       {children}
     </div>
   );
