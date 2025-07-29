@@ -29,7 +29,6 @@ export default function ProfilePage() {
           lastname: form.lastName,
           telephone: form.phone,
           address: form.address,
-          admin: false,
           aboutMe: form.aboutMe
         })
       });
