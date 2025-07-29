@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { LabeledInput, SubmitButton } from './Components';
 
@@ -18,8 +19,14 @@ export default function RegisterPage() {
 
   const navigate = useNavigate();
 
+  const { login } = useContext(AuthContext);
+
   const handleRegister = async (event) => {
     event.preventDefault();
+    if (form.password !== form.confirm_password) {
+      setError("Passwords do not match");
+      return;
+    }
     setError('');
     try {
       const response = await fetch('/api/users', {
@@ -33,7 +40,8 @@ export default function RegisterPage() {
           telephone: form.phone,
           address: form.address,
           admin: false,
-          aboutMe: form.aboutMe
+          aboutMe: form.aboutMe,
+          password: form.password
         })
       });
       if (!response.ok) {
@@ -41,8 +49,22 @@ export default function RegisterPage() {
         setError(data.error || 'Registration failed');
         return;
       }
-      const user = await response.json();
-      navigate('/profile', { state: { user } });
+      const loginResponse = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: form.username,
+          password: form.password
+        })
+      });
+      const loginData = await loginResponse.json();
+      if (loginResponse.ok && loginData.token) {
+        const payload = JSON.parse(atob(loginData.token.split('.')[1]));
+        login(loginData.token, payload);
+        navigate('/profile');
+      } else {
+        setError(loginData.error || 'Login after registration failed');
+      }
     } catch (err) {
       setError('Network or server error');
     }
