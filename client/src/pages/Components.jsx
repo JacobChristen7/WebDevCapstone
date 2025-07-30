@@ -107,13 +107,13 @@ export function ColumnsList({ title, subtitle, items = [], activeID, viewMode, o
                   >
                     {viewMode === ViewMode.STUDENTS ? (
                       item.students.map((student) => {
-                        return <CollapsibleSubItem item={student.name} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' onAction={onAction}>
+                        return <CollapsibleSubItem item={student.firstname + " " + student.lastname} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' onAction={onAction} key={student.id}>
                           <DeleteButton text="Unenroll Student" onClick={(e) => {e.stopPropagation(); onAction('UNENROLL_STUDENT', { userID: student.id, classID: item.id })}}></DeleteButton>
                         </CollapsibleSubItem>
                       })
                     ) : (
                       item.classes?.map((cls) => {
-                        return <CollapsibleSubItem item={cls.title} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' onAction={onAction}>
+                        return <CollapsibleSubItem item={cls.name} className='bg-blue-500 hover:bg-blue-400 rounded-2xl pt-2 text-white' onAction={onAction} key={cls.id}>
                           <DeleteButton text="Remove Class" onClick={(e) => {e.stopPropagation(); onAction('UNREGISTER_CLASS', { classID: cls.id, userID: item.id })}}></DeleteButton>
                         </CollapsibleSubItem>
                       })
@@ -160,6 +160,11 @@ export function CollapsibleSubItem({ item, index, children, className = '' }) {
 
 export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.DESCRIPTION, onAction, children }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [username, setUsername] = useState(item.username);
+  const [email, setEmail] = useState(item.email);
+  const [firstname, setFirstname] = useState(item.firstname);
+  const [lastname, setLastname] = useState(item.lastname);
+  const [address, setAddress] = useState(item.address);
 
   return (
     <li
@@ -181,7 +186,7 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
           {viewMode === ViewMode.STUDENTS && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
           {viewMode === ViewMode.CLASSES && <span className="italic text-gray-500">Currently Enrolled Classes:</span>}
           <div className={`${viewMode !== ViewMode.DESCRIPTION ? 'grid grid-cols-2 items-start gap-2 pt-3 mb-10' : ''}`}>{children}</div>
-          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description:"} value={item.description} className='mb-1 px-0.5'></LabeledInput>}
+          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description"} value={item.description} onChange={e => onAction('UPDATE_DESCRIPTION', { classID: item.id, value: e.target.value })} className='mb-1 px-0.5'></LabeledInput>}
           {viewMode === ViewMode.STUDENTS &&
             <div className='flex flex-row gap-2 items-center mt-8'>
               <DeleteButton text="Remove Class" onClick={(e) => {e.stopPropagation(); onAction('DELETE_CLASS', { classID: item.id})}}></DeleteButton>
@@ -190,12 +195,12 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
 
           {viewMode === ViewMode.CLASSES &&
             <div className='flex flex-col gap-2'>
-              <LabeledInput label={"Username"} value={item.username}></LabeledInput>
-              <LabeledInput label={"Email"} value={item.email}></LabeledInput>
-              <LabeledInput label={"First Name"} value={item.firstname}></LabeledInput>
-              <LabeledInput label={"Last Name"} value={item.lastname}></LabeledInput>
-              <LabeledInput label={"Address"} value={item.address}></LabeledInput>
-              <LabeledInput label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} value={item.aboutMe} className='mb-1'></LabeledInput>
+              <LabeledInput label="Username" value={item.username} onChange={e => onAction('UPDATE_USER_FIELD', { userID: item.id, field: 'username', value: e.target.value })} />
+              <LabeledInput label="Email" value={item.email} onChange={e => onAction('UPDATE_USER_FIELD', { userID: item.id, field: 'email', value: e.target.value })} />
+              <LabeledInput label="First Name" value={item.firstname} onChange={e => onAction('UPDATE_USER_FIELD', { userID: item.id, field: 'firstname', value: e.target.value })} />
+              <LabeledInput label="Last Name" value={item.lastname} onChange={e => onAction('UPDATE_USER_FIELD', { userID: item.id, field: 'lastname', value: e.target.value })} />
+              <LabeledInput label="Address" value={item.address} onChange={e => onAction('UPDATE_USER_FIELD', { userID: item.id, field: 'address', value: e.target.value })} />
+              <LabeledInput label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} value={item.aboutMe} onChange={e => onAction('UPDATE_USER_FIELD', { field: 'aboutMe', value: e.target.value })} className='mb-1'></LabeledInput>
               <div className='flex flex-row gap-2 items-center mt-6'>
                 <DeleteButton text="Remove User" onClick={(e) => {e.stopPropagation(); onAction('DELETE_USER', { userID: item.id})}}></DeleteButton>
                 <SubmitButton text="Save Changes" onClick={(e) => {e.stopPropagation(); onAction('SAVE_USER_CHANGES', { userID: item.id})}}></SubmitButton>
