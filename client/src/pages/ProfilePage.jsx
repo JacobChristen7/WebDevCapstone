@@ -81,7 +81,7 @@ export default function ProfilePage() {
   }, [userID, token]);
 
   if (!userID) {
-    return <div className="text-center mt-10 text-xl">You must be logged in to view your profile.</div>;
+    return <div className="text-center mt-10 text-3xl text-blue-800">You must be logged in to view your profile.</div>;
   }
 
   if (!form || !savedProfile) {
@@ -134,7 +134,7 @@ const ProfileDisplay = ({ form }) => {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm text-center">
+    <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm min-w-[320px] text-center">
       <img
         className="w-48 h-48 rounded-full mx-auto mb-4 border-4 border-blue-500"
         src="https://i.pravatar.cc/150"
