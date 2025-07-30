@@ -170,7 +170,9 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
       <div
         className="flex justify-between items-center select-none"
       >
-        {item.title === undefined ? item.name : item.title}
+        {viewMode === ViewMode.DESCRIPTION && item}
+        {viewMode === ViewMode.STUDENTS && item.title}
+        {viewMode === ViewMode.CLASSES && item.name}
         <span className={`text-xl transition-transform duration-200 ease-in-out text-gray-400 ${isOpen ? 'rotate-45' : 'rotate-0'}`}> + </span>
       </div>
 
