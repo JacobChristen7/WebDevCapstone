@@ -79,7 +79,7 @@ export function StylishList({ title, subtitle, items, activeID }) {
   );
 };
 
-export function ColumnsList({ title, subtitle, items, activeID, viewMode, onAction }) {
+export function ColumnsList({ title, subtitle, items = [], activeID, viewMode, onAction }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
