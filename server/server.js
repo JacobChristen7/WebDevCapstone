@@ -338,6 +338,42 @@ app.delete("/api/registrations/:id", passport.authenticate('jwt', { session: fal
   }
 });
 
+// Additional API requests
+
+// Get all students registered for a course
+app.get("/api/courses/:id/students", async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const result = await pool.query(
+      `SELECT u.* FROM registrations r
+       JOIN users u ON r.user_id = u.id
+       WHERE r.course_id = $1`,
+      [courseId]
+    );
+    res.json(result.rows); // array of user objects
+  } catch (err) {
+    logger.error("Error fetching students for course: " + err.message);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Get all courses a user is registered for
+app.get("/api/users/:id/courses", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const result = await pool.query(
+      `SELECT c.* FROM registrations r
+       JOIN courses c ON r.course_id = c.id
+       WHERE r.user_id = $1`,
+      [userId]
+    );
+    res.json(result.rows); // array of course objects
+  } catch (err) {
+    logger.error("Error fetching courses for user: " + err.message);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 // Create winston logger 
 const logger = winston.createLogger({
   level: 'info', 

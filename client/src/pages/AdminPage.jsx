@@ -20,30 +20,58 @@ export default function AdminPage() {
     }
   })
     .then(res => res.json())
-    .then(data => {
+    .then(async data => {
       console.log("Users API response:", data);
-      // Map backend fields to frontend expectations
-      const mappedUsers = data.map(user => ({
-        ...user,
-        name: user.name || (user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username),
-        classes: user.classes || []
-      }));
-      setUsers(mappedUsers);
+      // For each user, fetch their registered courses
+      const usersWithCourses = await Promise.all(
+        data.map(async user => {
+          try {
+            const res = await fetch(`/api/users/${user.id}/courses`);
+            const classes = await res.json();
+            return {
+              ...user,
+              name: user.name || (user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username),
+              classes: classes || []
+            };
+          } catch (err) {
+            return {
+              ...user,
+              name: user.name || (user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username),
+              classes: []
+            };
+          }
+        })
+      );
+      setUsers(usersWithCourses);
     })
     .catch(err => console.error("Failed to fetch users:", err));
 
   // Fetch courses
   fetch("/api/courses")
     .then(res => res.json())
-    .then(data => {
+    .then(async data => {
       console.log("Courses API response:", data);
-      // Map backend fields to frontend expectations
-      const mappedCourses = data.map(course => ({
-        ...course,
-        title: course.title || course.name,
-        students: course.students || []
-      }));
-      setAvailableCourses(mappedCourses);
+      // For each course, fetch its students
+      const coursesWithStudents = await Promise.all(
+        data.map(async course => {
+          try {
+            const res = await fetch(`/api/courses/${course.id}/students`);
+            const students = await res.json();
+            return {
+              ...course,
+              title: course.title || course.name,
+              students: students || []
+            };
+          } catch (err) {
+            return {
+              ...course,
+              title: course.title || course.name,
+              students: []
+            };
+          }
+        })
+      );
+      setAvailableCourses(coursesWithStudents);
     })
     .catch(err => console.error("Failed to fetch courses:", err));
 }, [token]);
