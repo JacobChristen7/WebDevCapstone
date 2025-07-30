@@ -94,6 +94,7 @@ export default function AdminPage() {
   
   //action handler code
   function handleAction(type, payload) {
+
   switch (type) {
     case 'UNREGISTER_CLASS': {
       const { classID, userID } = payload;
@@ -179,6 +180,23 @@ export default function AdminPage() {
       });
       break;
     }
+      
+      case 'UPDATE_USER_FIELD': {
+        const { userID, field, value } = payload;
+        setUsers(prevUsers => prevUsers.map(user => {
+          user.id === userID ? { ...user, [field]: value } : user
+        }))
+        break;
+      }
+      case 'UPDATE_DESCRIPTION': {
+        const { classID, value } = payload;
+        setAvailableCourses(prevCourses => {
+          prevCourses.map(course => {
+            course.id === classID ? { ...course, description: value } : course
+          })
+        });
+      }
+      
     default:
       console.warn(`Unknown action type: ${type}`, payload);
   }
