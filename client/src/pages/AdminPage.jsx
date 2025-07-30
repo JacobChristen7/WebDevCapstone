@@ -97,7 +97,6 @@ export default function AdminPage() {
   switch (type) {
     case 'UNREGISTER_CLASS': {
       const { classID, userID } = payload;
-      // Example: Unregister a class for a user (delete registration)
       fetch(`/api/registrations`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -105,7 +104,6 @@ export default function AdminPage() {
       })
       .then(res => {
         if (res.ok) {
-          // Optionally update state/UI here
           console.log(`Unregistered class ${classID} from user ${userID}`);
         }
       });
@@ -113,7 +111,6 @@ export default function AdminPage() {
     }
     case 'UNENROLL_STUDENT': {
       const { userID, classID } = payload;
-      // Example: Unenroll a student from a class (delete registration)
       fetch(`/api/registrations`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -121,7 +118,6 @@ export default function AdminPage() {
       })
       .then(res => {
         if (res.ok) {
-          // Optionally update state/UI here
           console.log(`Unenrolled student ${userID} from class ${classID}`);
         }
       });
@@ -136,7 +132,6 @@ export default function AdminPage() {
       })
       .then(res => {
         if (res.ok) {
-          // Optionally update state/UI here
           console.log(`Saved changes for user ${userID}`);
         }
       });
@@ -165,7 +160,6 @@ export default function AdminPage() {
       })
       .then(res => {
         if (res.ok) {
-          // Optionally update state/UI here
           console.log(`Saved changes for class ${classID}`);
         }
       });
