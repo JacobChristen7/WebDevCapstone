@@ -170,7 +170,9 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
       <div
         className="flex justify-between items-center select-none"
       >
-        {item.title === undefined ? item.name : item.title}
+        {viewMode === ViewMode.DESCRIPTION && item}
+        {viewMode === ViewMode.STUDENTS && item.title}
+        {viewMode === ViewMode.CLASSES && item.name}
         <span className={`text-xl transition-transform duration-200 ease-in-out text-gray-400 ${isOpen ? 'rotate-45' : 'rotate-0'}`}> + </span>
       </div>
 
@@ -179,7 +181,7 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
           {viewMode === ViewMode.STUDENTS && <span className="italic text-gray-500">Currently Enrolled Students:</span>}
           {viewMode === ViewMode.CLASSES && <span className="italic text-gray-500">Currently Enrolled Classes:</span>}
           <div className={`${viewMode !== ViewMode.DESCRIPTION ? 'grid grid-cols-2 items-start gap-2 pt-3 mb-10' : ''}`}>{children}</div>
-          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description:"} value={"null"} className='mb-1 px-0.5'></LabeledInput>}
+          {viewMode === ViewMode.STUDENTS && <LabeledInput label={"Description:"} value={item.description} className='mb-1 px-0.5'></LabeledInput>}
           {viewMode === ViewMode.STUDENTS &&
             <div className='flex flex-row gap-2 items-center mt-8'>
               <DeleteButton text="Remove Class" onClick={(e) => {e.stopPropagation(); onAction('DELETE_CLASS', { classID: item.id})}}></DeleteButton>
@@ -188,12 +190,12 @@ export function CollapsibleItem({ item, index, isDragging, viewMode = ViewMode.D
 
           {viewMode === ViewMode.CLASSES &&
             <div className='flex flex-col gap-2'>
-              <LabeledInput label={"Username"} value={"null"}></LabeledInput>
-              <LabeledInput label={"Email"} value={"null"}></LabeledInput>
-              <LabeledInput label={"First Name"} value={"null"}></LabeledInput>
-              <LabeledInput label={"Last Name"} value={"null"}></LabeledInput>
-              <LabeledInput label={"Address"} value={"null"}></LabeledInput>
-              <LabeledInput label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} value={"null"} className='mb-1'></LabeledInput>
+              <LabeledInput label={"Username"} value={item.username}></LabeledInput>
+              <LabeledInput label={"Email"} value={item.email}></LabeledInput>
+              <LabeledInput label={"First Name"} value={item.firstname}></LabeledInput>
+              <LabeledInput label={"Last Name"} value={item.lastname}></LabeledInput>
+              <LabeledInput label={"Address"} value={item.address}></LabeledInput>
+              <LabeledInput label={<span>About Me <span className="italic text-gray-500">(optional)</span></span>} value={item.aboutMe} className='mb-1'></LabeledInput>
               <div className='flex flex-row gap-2 items-center mt-6'>
                 <DeleteButton text="Remove User" onClick={(e) => {e.stopPropagation(); onAction('DELETE_USER', { userID: item.id})}}></DeleteButton>
                 <SubmitButton text="Save Changes" onClick={(e) => {e.stopPropagation(); onAction('SAVE_USER_CHANGES', { userID: item.id})}}></SubmitButton>
