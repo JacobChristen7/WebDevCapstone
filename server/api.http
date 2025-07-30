@@ -2,7 +2,7 @@
 @courseID = 22
 @registrationID = 46
 
-@token = none
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOnRydWUsImlhdCI6MTc1Mzg5NTgwNiwiZXhwIjoxNzUzODk5NDA2fQ.eUjL3oA1_CxURDzd4aL9hRHgJ79JQ1-CP3LlL416MWE
 ### Login to get JWT token
 POST http://localhost:3001/api/login
 Content-Type: application/json
@@ -18,10 +18,10 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "username": "HomieWithACat",
-  "email": "homie@testing.com",
-  "firstname": "Max",
-  "lastname": "Sutch",
+  "username": "Homie",
+  "email": "homies@testing.com",
+  "firstname": "Homie",
+  "lastname": "Robertson",
   "telephone": "123-456-78910",
   "address": "123 Main",
   "admin": false,
