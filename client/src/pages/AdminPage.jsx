@@ -94,47 +94,101 @@ export default function AdminPage() {
   
   //action handler code
   function handleAction(type, payload) {
-    switch (type) {
-      case 'UNREGISTER_CLASS': {
-        const { classID, userID } = payload;
-        // Do something meaningful in the backend here
-        console.log(`Unregister class ${classID} from user ${userID}`);
-        break;
-      }
-      case 'UNENROLL_STUDENT': {
-        const { userID, classID } = payload;
-        // Do something meaningful in the backend here
-        console.log(`Unenroll student ${userID} from class ${classID}`);
-        break
-      }
-
-
-      case 'SAVE_USER_CHANGES': {
-        const { userID } = payload; //this will include all the user details
-        console.log(`Save changes for user ${userID}`);
-        break;
-      }
-      case 'DELETE_USER': {
-        const { userID } = payload;
-        console.log(`Delete user ${userID}`);
-        break;
-      }
-
-
-      case 'SAVE_CLASS_CHANGES': {
-        const { classID } = payload; //this will have the description too
-        console.log(`Save changes for class ${classID}`);
-        break;
-      }
-      case 'DELETE_CLASS': {
-        const { classID } = payload;
-        console.log(`Delete class ${classID}`);
-        break;
-      }
-      default:
-        console.warn(`Unknown action type: ${payload}`);
+  switch (type) {
+    case 'UNREGISTER_CLASS': {
+      const { classID, userID } = payload;
+      // Example: Unregister a class for a user (delete registration)
+      fetch(`/api/registrations`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userID, course_id: classID })
+      })
+      .then(res => {
+        if (res.ok) {
+          // Optionally update state/UI here
+          console.log(`Unregistered class ${classID} from user ${userID}`);
+        }
+      });
+      break;
     }
+    case 'UNENROLL_STUDENT': {
+      const { userID, classID } = payload;
+      // Example: Unenroll a student from a class (delete registration)
+      fetch(`/api/registrations`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userID, course_id: classID })
+      })
+      .then(res => {
+        if (res.ok) {
+          // Optionally update state/UI here
+          console.log(`Unenrolled student ${userID} from class ${classID}`);
+        }
+      });
+      break;
+    }
+    case 'SAVE_USER_CHANGES': {
+      const { userID, ...userDetails } = payload;
+      fetch(`/api/users/${userID}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(userDetails)
+      })
+      .then(res => {
+        if (res.ok) {
+          // Optionally update state/UI here
+          console.log(`Saved changes for user ${userID}`);
+        }
+      });
+      break;
+    }
+    case 'DELETE_USER': {
+      const { userID } = payload;
+      fetch(`/api/users/${userID}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => {
+        if (res.ok) {
+          setUsers(prev => prev.filter(user => user.id !== userID));
+          console.log(`Deleted user ${userID}`);
+        }
+      });
+      break;
+    }
+    case 'SAVE_CLASS_CHANGES': {
+      const { classID, ...classDetails } = payload;
+      fetch(`/api/courses/${classID}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(classDetails)
+      })
+      .then(res => {
+        if (res.ok) {
+          // Optionally update state/UI here
+          console.log(`Saved changes for class ${classID}`);
+        }
+      });
+      break;
+    }
+    case 'DELETE_CLASS': {
+      const { classID } = payload;
+      fetch(`/api/courses/${classID}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => {
+        if (res.ok) {
+          setAvailableCourses(prev => prev.filter(course => course.id !== classID));
+          console.log(`Deleted class ${classID}`);
+        }
+      });
+      break;
+    }
+    default:
+      console.warn(`Unknown action type: ${type}`, payload);
   }
+}
 
   return (
     <div className="admin-background">
