@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Input, SubmitButton } from './Components';
 import { AuthContext } from '../context/AuthContext.jsx';
+import { useNavigate } from "react-router-dom"
 
 export default function ProfilePage() {
   const { user, token } = useContext(AuthContext);
@@ -123,7 +124,15 @@ export default function ProfilePage() {
 };
 
 const ProfileDisplay = ({ form }) => {
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const { username, firstName, lastName, email, phone, address, aboutMe } = form;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm text-center">
       <img
@@ -148,6 +157,12 @@ const ProfileDisplay = ({ form }) => {
       <p className="text-gray-600 my-6 text-start">
         {aboutMe}
       </p>
+      <button
+        className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
     </div>
   );
 };
