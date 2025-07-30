@@ -113,9 +113,6 @@ export default function AdminPage() {
   const [users, setUsers] = useState(sampleUsers)
   const [selectedCourses, setSelectedCourses] = useState([])
 
-  //this state tracks the currently dragged course
-  const [activeCourse, setActiveCourse] = useState(null)
-
   const handleCoursesSearchTextChanged = (e) => {
     setCoursesSearchText(e.target.value)
   }
@@ -131,18 +128,62 @@ export default function AdminPage() {
   const filteredUsers = users.filter(user => {
     return user.name.toLowerCase().includes(studentsSearchText.toLowerCase())
   })
+  
+  //action handler code
+  function handleAction(type, payload) {
+    switch (type) {
+      case 'UNREGISTER_CLASS': {
+        const { classID, userID } = payload;
+        // Do something meaningful in the backend here
+        console.log(`Unregister class ${classID} from user ${userID}`);
+        break;
+      }
+      case 'UNENROLL_STUDENT': {
+        const { userID, classID } = payload;
+        // Do something meaningful in the backend here
+        console.log(`Unenroll student ${userID} from class ${classID}`);
+        break
+      }
+
+
+      case 'SAVE_USER_CHANGES': {
+        const { userID } = payload; //this will include all the user details
+        console.log(`Save changes for user ${userID}`);
+        break;
+      }
+      case 'DELETE_USER': {
+        const { userID } = payload;
+        console.log(`Delete user ${userID}`);
+        break;
+      }
+
+
+      case 'SAVE_CLASS_CHANGES': {
+        const { classID } = payload; //this will have the description too
+        console.log(`Save changes for class ${classID}`);
+        break;
+      }
+      case 'DELETE_CLASS': {
+        const { classID } = payload;
+        console.log(`Delete class ${classID}`);
+        break;
+      }
+      default:
+        console.warn(`Unknown action type: ${payload}`);
+    }
+  }
 
   return (
     <div class="admin-background">
       <div className='flex flex-col items-center pt-20 pb-20 h-screen overflow-y-auto box-border gap-5'>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
           <SearchBar searchText={coursesSearchText} placeholder='Search for a course...' handleChange={handleCoursesSearchTextChanged}></SearchBar>
-          <ColumnsCoursesList title="All Courses" subtitle="Expand to view enrolled students" items={filteredCourses} className='h-[500px] columns-2' viewMode={ViewMode.STUDENTS}></ColumnsCoursesList>
+          <ColumnsCoursesList title="All Courses" subtitle="Expand to view enrolled students" items={filteredCourses} className='h-[500px] columns-2' viewMode={ViewMode.STUDENTS} activeId={0} onAction={handleAction}></ColumnsCoursesList>
         </div>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
         <SearchBar searchText={studentsSearchText} placeholder='Search for a user...' handleChange={handleStudentsSearchTextChanged}></SearchBar>
           <div className='flex gap-10'>
-            <ColumnsCoursesList title="All Users" subtitle="Expand to view detail" items={filteredUsers} className='w-full h-[500px]' viewMode={ViewMode.CLASSES} activeId={0}></ColumnsCoursesList>
+            <ColumnsCoursesList title="All Users" subtitle="Expand to view detail" items={filteredUsers} className='w-full h-[500px]' viewMode={ViewMode.CLASSES} activeId={0} onAction={handleAction}></ColumnsCoursesList>
           </div>
         </div>
       </div>
