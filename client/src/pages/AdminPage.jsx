@@ -129,24 +129,45 @@ export default function AdminPage() {
     return user.name.toLowerCase().includes(studentsSearchText.toLowerCase())
   })
   
-  //example action handler code
+  //action handler code
   function handleAction(type, payload) {
     switch (type) {
-      case 'REMOVE_CLASS':
-        // const { userId, classId } = payload;
-        // // Do something meaningful in the backend here
-        console.log(`Remove class ${payload.classId} from user ${payload.userId}`);
-        
+      case 'UNREGISTER_CLASS': {
+        const { classID, userID } = payload;
+        // Do something meaningful in the backend here
+        console.log(`Unregister class ${classID} from user ${userID}`);
         break;
-      case 'UNENROLL_STUDENT':
-        console.log(`Unenroll student ${payload.studentId} from class ${payload.classId}`);
+      }
+      case 'UNENROLL_STUDENT': {
+        const { userID, classID } = payload;
+        // Do something meaningful in the backend here
+        console.log(`Unenroll student ${userID} from class ${classID}`);
+        break
+      }
+
+
+      case 'SAVE_USER_CHANGES': {
+        const { userID } = payload; //this will include all the user details
+        console.log(`Save changes for user ${userID}`);
         break;
-      case 'DELETE_USER':
-        console.log(`Delete user ${payload.userId}`);
+      }
+      case 'DELETE_USER': {
+        const { userID } = payload;
+        console.log(`Delete user ${userID}`);
         break;
-      case 'SAVE_CHANGES':
-        console.log(`Save changes for ${payload.entityType} ${payload.id}`);
+      }
+
+
+      case 'SAVE_CLASS_CHANGES': {
+        const { classID } = payload; //this will have the description too
+        console.log(`Save changes for class ${classID}`);
         break;
+      }
+      case 'DELETE_CLASS': {
+        const { classID } = payload;
+        console.log(`Delete class ${classID}`);
+        break;
+      }
       default:
         console.warn(`Unknown action type: ${type}`);
     }
@@ -157,7 +178,7 @@ export default function AdminPage() {
       <div className='flex flex-col items-center pt-20 pb-20 h-screen overflow-y-auto box-border gap-5'>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center p-10 text-black rounded-3xl gap-10">
           <SearchBar searchText={coursesSearchText} placeholder='Search for a course...' handleChange={handleCoursesSearchTextChanged}></SearchBar>
-          <ColumnsCoursesList title="All Courses" subtitle="Expand to view enrolled students" items={filteredCourses} className='h-[500px] columns-2' viewMode={ViewMode.STUDENTS}></ColumnsCoursesList>
+          <ColumnsCoursesList title="All Courses" subtitle="Expand to view enrolled students" items={filteredCourses} className='h-[500px] columns-2' viewMode={ViewMode.STUDENTS} activeId={0} onAction={handleAction}></ColumnsCoursesList>
         </div>
         <div className="bg-gray-100 flex flex-col w-3/4 justify-center text-black rounded-3xl gap-10 p-10">
         <SearchBar searchText={studentsSearchText} placeholder='Search for a user...' handleChange={handleStudentsSearchTextChanged}></SearchBar>
