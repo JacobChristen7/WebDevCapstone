@@ -169,7 +169,7 @@ export default function AdminPage() {
         break;
       }
       default:
-        console.warn(`Unknown action type: ${type}`);
+        console.warn(`Unknown action type: ${payload}`);
     }
   }
 
