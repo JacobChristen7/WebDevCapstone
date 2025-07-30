@@ -5,15 +5,15 @@ import { LabeledInput, SubmitButton } from './Components';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
-    username: "testing",
-    email: "testing",
-    firstName: "testing",
-    lastName: "testing",
-    phone: "testing",
-    address: "testing",
-    aboutMe: "testing",
-    password: "testing",
-    confirm_password: "testing"
+    username: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    aboutMe: "",
+    password: "",
+    confirm_password: ""
   });
   const [error, setError] = useState('');
 

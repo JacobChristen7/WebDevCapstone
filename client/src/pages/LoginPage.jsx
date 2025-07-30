@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LabeledInput, SubmitButton } from './Components';
 import { AuthContext } from '../context/AuthContext.jsx';
 
@@ -54,6 +54,12 @@ export default function LoginPage() {
 
         <SubmitButton text={loading ? "Logging in..." : "Login"} disabled={loading} onClick={null} className="mt-5" />
         {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="mt-4 text-gray-700">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-black-600 underline hover:text-blue-800">
+            Register
+          </Link>
+        </div>
       </form>
     </div>
   );

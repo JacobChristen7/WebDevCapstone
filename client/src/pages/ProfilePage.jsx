@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Input, SubmitButton } from './Components';
 import { AuthContext } from '../context/AuthContext.jsx';
+import { useNavigate } from "react-router-dom"
 
 export default function ProfilePage() {
   const { user, token } = useContext(AuthContext);
@@ -80,7 +81,7 @@ export default function ProfilePage() {
   }, [userID, token]);
 
   if (!userID) {
-    return <div className="text-center mt-10 text-xl">You must be logged in to view your profile.</div>;
+    return <div className="text-center mt-10 text-3xl text-blue-800">You must be logged in to view your profile.</div>;
   }
 
   if (!form || !savedProfile) {
@@ -123,9 +124,17 @@ export default function ProfilePage() {
 };
 
 const ProfileDisplay = ({ form }) => {
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const { username, firstName, lastName, email, phone, address, aboutMe } = form;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
-    <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm text-center">
+    <div className="bg-white shadow-lg rounded-2xl p-8 max-w-sm min-w-[320px] text-center">
       <img
         className="w-48 h-48 rounded-full mx-auto mb-4 border-4 border-blue-500"
         src="https://i.pravatar.cc/150"
@@ -148,6 +157,12 @@ const ProfileDisplay = ({ form }) => {
       <p className="text-gray-600 my-6 text-start">
         {aboutMe}
       </p>
+      <button
+        className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
     </div>
   );
 };
