@@ -26,7 +26,7 @@ Students are able to log in to this website, register for courses, and view thei
 
   - A separate components file was created. This file has several React elements that nest inside each other to create a responsive and reusable code base.
 
-  - Credit to @dnd-kit I was able to integrate a simple drag and drop registration system which is intuitive and easy to use.
+  - Credit to @clauderic/dnd-kit I was able to integrate a simple drag and drop registration system which is intuitive and easy to use.
 
 
 
