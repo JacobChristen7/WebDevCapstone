@@ -1,6 +1,3 @@
-![App Screenshot](https://github.com/JacobChristen7/WebDevCapstone/blob/master/Admin-page.png?raw=true "Admin page")
-![App Screenshot](https://github.com/JacobChristen7/WebDevCapstone/blob/master/Courses-page.png?raw=true "Courses page")
-
 ## Stackademy Student Registration App
 
 Students are able to log in to this website, register for courses, and view their school profile. Administrators are able to change any data in the database, register/unregister students for courses, and view and change the profiles for every user. New users can register an account and change their profile info.
@@ -17,8 +14,11 @@ Students are able to log in to this website, register for courses, and view thei
 - Admin dashboard for managing courses and users  
 - Server-side logging with Winston and Morgan  
 - RESTful API endpoints  
-- PostgreSQL relational database  
+- PostgreSQL relational database
 
+### Screenshots
+![App Screenshot](https://github.com/JacobChristen7/WebDevCapstone/blob/master/Admin-page.png?raw=true "Admin page")
+![App Screenshot](https://github.com/JacobChristen7/WebDevCapstone/blob/master/Courses-page.png?raw=true "Courses page")
 
 ### Frontend
 
