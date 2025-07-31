@@ -101,7 +101,7 @@ export default function ProfilePage() {
         <div className="flex w-full items-center justify-center bg-gray-100 pl-10">
           <div className="bg-white shadow-md rounded-2xl p-6 w-full flex justify-center">
             <div className='w-3/4'>
-              <div className='mb-5 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-3xl'>Subpar University</div>
+              <div className='mb-5 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-3xl'>Stackademy</div>
               <h2 className="text-xl font-semibold mb-4 text-gray-800">My Profile</h2>
 
               <div className="space-y-4">
