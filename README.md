@@ -32,7 +32,21 @@ Students are able to log in to this website, register for courses, and view thei
 
 ### Backend
 
-  - [description]
+- The backend consists of a PostgreSQL database for data handling, JWT and bcrypt for authentication, and uses the Express router for API routing.
+- Implementation steps:
+  - Set up the Express router and defined all necessary routes.
+  - Established a connection to the PostgreSQL database, creating tables and data structures as needed.
+  - Added API calls for CRUD operations for users and courses.
+  - Implemented JWT and bcrypt authentication to secure routes and functions such as course management and user managment/deletion.
+
+### Backend Features
+
+- Node.js/Express server with RESTful API architecture
+- User authentication using JWT and bcrypt for password hashing
+- PostgreSQL database integration for persistent data storage
+- API endpoints for user registration, login, profile management, and course registration
+- Admin endpoints for managing users and courses
+- Server-side logging with Winston and Morgan for error and request tracking
 
 ### API Routes [Placeholder]
 
