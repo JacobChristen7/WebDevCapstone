@@ -48,6 +48,52 @@ Students are able to log in to this website, register for courses, and view thei
 - Admin endpoints for managing users and courses
 - Server-side logging with Winston and Morgan for error and request tracking
 
+### Database Table Layout
+
+#### Users Table
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  firstname VARCHAR(50) NOT NULL,
+  lastname VARCHAR(50) NOT NULL,
+  telephone VARCHAR(20),
+  address TEXT,
+  admin BOOLEAN DEFAULT FALSE,
+  aboutMe TEXT,
+  password VARCHAR(255) NOT NULL
+);
+```
+
+#### Courses Table
+```sql
+CREATE TABLE courses (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  credits INT,
+  capacity INT
+);
+```
+
+#### Registrations Table
+```sql
+CREATE TABLE registrations (
+  id SERIAL PRIMARY KEY,
+  user_id INT,
+  course_id INT
+);
+```
+
+**Note:**
+- To use this project, add a `.env` file with the following lines:
+  - `DATABASE_URL=your_postgres_connection_string`
+  - `JWT_SECRET=your_jwt_secret`
+- Then use the table queries above in your PostgreSQL database for the proper table layouts.
+
+
+
 ### API Routes [Placeholder]
 
 | Method | Endpoint             | Description               |
