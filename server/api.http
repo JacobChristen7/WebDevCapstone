@@ -18,15 +18,15 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "username": "Homie",
-  "email": "homies@testing.com",
-  "firstname": "Homie",
-  "lastname": "Robertson",
+  "username": "Tester 2",
+  "email": "testing@testing.com",
+  "firstname": "Tester",
+  "lastname": "David",
   "telephone": "123-456-78910",
   "address": "123 Main",
   "admin": false,
   "aboutMe": "just testing stuff",
-  "password": "dopePassword"
+  "password": "password"
 }
 ###
 
